@@ -64,7 +64,7 @@ async function icon(Comp, hex, size = 256) {
     title: "SECTION_DARK",
     background: { color: C.text2 },
     objects: [
-      { placeholder: { options: { name: "title", type: "title", x: 0.8, y: 0.55, w: 11.7, h: 0.95, fontSize: 30, bold: true, color: C.background1, valign: "middle", align: "left", margin: 0 }, text: "" } },
+      { placeholder: { options: { name: "title", type: "title", x: 0.8, y: 0.65, w: 11.7, h: 0.9, fontSize: 28, bold: true, color: C.background1, valign: "middle", align: "left", margin: 0 }, text: "" } },
     ],
     slideNumber: { x: 12.0, y: 6.95, w: 0.6, h: 0.3, fontSize: 10, color: C.accent6, align: "right" },
   });
@@ -72,7 +72,7 @@ async function icon(Comp, hex, size = 256) {
     title: "CONTENT",
     background: { color: C.background1 },
     objects: [
-      { placeholder: { options: { name: "title", type: "title", x: 0.6, y: 0.4, w: 8.1, h: 0.85, fontSize: 28, bold: true, color: C.text2, valign: "middle", align: "left", margin: 0 }, text: "" } },
+      { placeholder: { options: { name: "title", type: "title", x: 0.6, y: 0.55, w: 8.15, h: 0.75, fontSize: 26, bold: true, color: C.text2, valign: "middle", align: "left", margin: 0 }, text: "" } },
     ],
     slideNumber: { x: 12.1, y: 6.95, w: 0.6, h: 0.3, fontSize: 10, color: C.accent5, align: "right" },
   });
@@ -89,6 +89,9 @@ async function icon(Comp, hex, size = 256) {
     const p = d * 0.25;
     s.addImage({ data, x: x + p, y: y + p, w: d - 2 * p, h: d - 2 * p, objectName: "图标" });
   }
+  // 章节标签：标题上方的小字，标明所在部分；标题本身写成一句结论（断言—证据式）
+  const kicker = (s, t, dark) =>
+    text(s, t, { x: dark ? 0.8 : 0.6, y: dark ? 0.35 : 0.28, w: 8.0, h: 0.32, fontSize: 12, bold: true, color: dark ? C.accent4 : C.accent1, valign: "middle", objectName: "章节标签" });
   // 汇报进度标签：标明当前所在部分，贯穿正文各页
   const PARTS = ["背景", "设计", "内容", "评价", "总结"];
   function tracker(s, active) {
@@ -137,7 +140,7 @@ async function icon(Comp, hex, size = 256) {
 
   // ======================= 汇报框架 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "开场" });
-  s.addText("汇报框架与核心观点", { placeholder: "title" });
+  s.addText("趋势可参考，但论证链关键环节证据不足", { placeholder: "title" }); kicker(s, "汇报框架与核心观点");
   [
     ["一", "研究背景与研究问题", "报告为何开展、回答哪些问题"],
     ["二", "研究设计", "对象、时间、抽样方式、样本量"],
@@ -163,7 +166,7 @@ async function icon(Comp, hex, size = 256) {
   // ======================= 一、背景与问题 =======================
   pres.addSection({ title: "报告介绍" });
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  s.addText("一、研究背景与研究问题", { placeholder: "title" });
+  s.addText("内容分散使检索变难，AI 能否成为新入口？", { placeholder: "title" }); kicker(s, "一、研究背景与研究问题");
   tracker(s, 0);
   text(s, [
     { text: "研究背景：", options: { bold: true, color: C.accent1 } },
@@ -195,7 +198,7 @@ async function icon(Comp, hex, size = 256) {
 
   // ======================= 二、研究设计 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  s.addText("二、研究设计：两项核心问卷调查", { placeholder: "title" });
+  s.addText("结论依赖两项线上问卷，抽样方式均未公开", { placeholder: "title" }); kicker(s, "二、研究设计");
   tracker(s, 1);
   [
     ["调查一：2026 年生成式 AI 使用调查", "报告中 AI 相关数据的来源", [
@@ -224,7 +227,7 @@ async function icon(Comp, hex, size = 256) {
 
   // ======================= 三、报告内容（一） =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  s.addText("三、报告内容（一）：AI 使用增加，信任不足", { placeholder: "title" });
+  s.addText("报告发现：年轻用户依赖 AI，但信任不足", { placeholder: "title" }); kicker(s, "三、报告内容（一）");
   tracker(s, 2);
   statGrid(s, [
     ["54%", "13–14 岁 AI 用户每日使用（报告称“Alpha 世代”）", C.accent1],
@@ -250,7 +253,7 @@ async function icon(Comp, hex, size = 256) {
 
   // ======================= 三、报告内容（二） =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  s.addText("三、报告内容（二）：内容分散，检索困难", { placeholder: "title" });
+  s.addText("报告认为：内容分散致退订，AI 须接入可信数据", { placeholder: "title" }); kicker(s, "三、报告内容（二）");
   tracker(s, 2);
   statGrid(s, [
     ["54%", "联网电视（CTV）占美国电视收视时长（尼尔森，2025 年第四季度）", C.accent1],
@@ -278,9 +281,9 @@ async function icon(Comp, hex, size = 256) {
   // ======================= 四、论证链与评价思路 =======================
   pres.addSection({ title: "方法评价" });
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  s.addText("四、方法评价：沿论证链逐环检验", { placeholder: "title" });
+  s.addText("报告的四环论证，可按课上四个维度逐环检验", { placeholder: "title" }); kicker(s, "四、方法评价 · 总览");
   tracker(s, 3);
-  text(s, "参照课上春晚满意度调查案例（央视 81.6% 与新浪网 11.5%）：调查对象、研究总体、调查时间与研究方法不同，结论必然不同。", { x: 0.6, y: 1.3, w: 12.1, h: 0.5, fontSize: 14, color: C.text2, valign: "middle", objectName: "评价引言" });
+  text(s, "依据：课上春晚满意度调查案例（央视 81.6% 与新浪网 11.5%）——调查对象、研究总体、调查时间与研究方法不同，结论必然不同。", { x: 0.6, y: 1.3, w: 12.1, h: 0.5, fontSize: 14, color: C.text2, valign: "middle", objectName: "评价引言" });
   const links = [
     ["① 用户日益依赖 AI", "54% 每日使用；较皮尤 30% “正在加速”", "维度一 调查对象\n维度三 调查时间"],
     ["② 但对 AI 信任不足", "75% 会核查 AI 的回答", "维度一 调查对象"],
@@ -305,7 +308,7 @@ async function icon(Comp, hex, size = 256) {
 
   // ======================= 维度一 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  s.addText("维度一 · 调查对象：样本代表性存疑", { placeholder: "title" });
+  s.addText("样本仅为 AI 用户，结论却推及“美国人”", { placeholder: "title" }); kicker(s, "四、方法评价 · 维度一  调查对象");
   tracker(s, 3);
   [
     [0.8, 1.5, 4.8, C.background2, "美国人口"],
@@ -321,16 +324,16 @@ async function icon(Comp, hex, size = 256) {
     { text: "4,003", options: { fontSize: 22, bold: true, fontFace: "Arial", color: C.background1 } },
   ], { x: 2.2, y: 3.9, w: 2.0, h: 1.2, align: "center", valign: "middle", objectName: "样本标签" });
   analysis(s, [
-    "样本仅为 AI 聊天机器人用户，报告却多处将结论表述为“美国人”；所称“Alpha 世代”仅含 13–14 岁受访者。",
-    "线上样本以“使用 AI”为筛选条件，抽样框、加权方法与应答率均未公开，调查总体小于报告推论的总体。",
-    "54%、75% 等数据只能解释为“美国 AI 用户中”的比例；与课上 Durex 网络调查同属覆盖偏差问题。",
+    "样本仅为 AI 聊天机器人用户，结论却表述为“美国人”；“Alpha 世代”仅含 13–14 岁。",
+    "以“使用 AI”为筛选条件的线上样本；抽样框、加权、应答率均未公开。",
+    "54%、75% 只代表美国 AI 用户；与课上 Durex 网络调查同属覆盖偏差。",
   ]);
   src(s, "来源：Gracenote 报告；尼尔森新闻稿原文：“Gen Alpha findings are based on respondents ages 13 and 14”。");
   notes(s);
 
   // ======================= 维度二 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  s.addText("维度二 · 研究总体：六国均值用于美国", { placeholder: "title" });
+  s.addText("“14 分钟”是六国均值，美国实为 12 分钟", { placeholder: "title" }); kicker(s, "四、方法评价 · 维度二  研究总体");
   tracker(s, 3);
   s.addChart(pres.charts.BAR, [{ name: "寻找节目时长", labels: ["巴西", "法国", "德国", "墨西哥", "英国", "美国", "六国均值"], values: [12, 26, 11, 11, 12, 12, 14] }], {
     x: 0.6, y: 1.45, w: 5.8, h: 4.95, barDir: "bar", catAxisOrientation: "maxMin",
@@ -342,16 +345,16 @@ async function icon(Comp, hex, size = 256) {
     catAxisLineShow: false, showLegend: false, barGapWidthPct: 45, objectName: "分国家寻找时长图",
   });
   analysis(s, [
-    "“平均 14 分钟”“54% 可能退订”均来自六国调查；报告将 14 分钟置于描述美国收视情况的图表中。",
-    "14 分钟为六国简单平均（每国 500 人、等权）；美国为 12 分钟，法国的 26 分钟拉高了均值。报告未标明国家口径。",
-    "读者会高估美国用户的检索困难；“50% 的美国观众考虑退订”在原始报告中仅见六国均值 49%。",
+    "“14 分钟”“54% 可能退订”均为六国数据，却置于美国收视图表中。",
+    "14 分钟为六国等权简单平均；法国 26 分钟拉高均值，美国为 12 分钟。",
+    "高估美国用户的检索困难；“50% 美国观众考虑退订”原文仅见六国 49%。",
   ]);
   src(s, "来源：Gracenote 报告；Gracenote 2025 年报告《State of Play》分国家、分年龄图表（每国 500 人）。");
   notes(s);
 
   // ======================= 维度三 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  s.addText("维度三 · 调查时间：比较口径不一致", { placeholder: "title" });
+  s.addText("两项调查分母不同，“加速”结论不成立", { placeholder: "title" }); kicker(s, "四、方法评价 · 维度三  调查时间");
   tracker(s, 3);
   [
     [1.5, "皮尤研究中心（2025 年 9–10 月）", "24%", C.accent5, "分母：全体 13–14 岁青少年 · 概率样本，经加权"],
@@ -366,16 +369,16 @@ async function icon(Comp, hex, size = 256) {
     text(s, meta, { x: 0.9, y: y + 1.6, w: 5.3, h: 0.5, fontSize: 13, color: C.text1, valign: "middle", objectName: `对比说明${i + 1}` });
   });
   analysis(s, [
-    "报告将皮尤 2025 年秋季的 30% 与自身 2026 年初的 54% 对比，认为使用频率“正在加速”。",
-    "两项调查的分母不同（全体青少年 vs AI 用户），抽样方法与年龄范围也不同；同为 13–14 岁，皮尤仅为 24%。",
-    "统一为“使用者”口径后，皮尤为 44%，差距约 10 个百分点，不足以推断使用频率上升。",
+    "以皮尤 2025 年秋的 30% 对比本报告 2026 年初的 54%，称使用“正在加速”。",
+    "分母不同：皮尤为全体青少年（13–14 岁仅 24%），本报告仅含 AI 用户。",
+    "统一为使用者口径后皮尤为 44%，差距约 10 个百分点，不足以推断“加速”。",
   ]);
   src(s, "来源：Gracenote 报告；皮尤《Teens, Social Media and AI Chatbots 2025》数据表（全体每日 28%，13–14 岁 24%，使用者中 44%）。");
   notes(s);
 
   // ======================= 维度四 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  s.addText("维度四 · 研究方法：因果推断依据不足", { placeholder: "title" });
+  s.addText("四类异质数据不足以证明“检索困难导致退订”", { placeholder: "title" }); kicker(s, "四、方法评价 · 维度四  研究方法");
   tracker(s, 3);
   [
     ["意向 · 问卷", C.accent1, "54%", "18–34 岁表示可能退订（六国）"],
@@ -390,9 +393,9 @@ async function icon(Comp, hex, size = 256) {
     text(s, d, { x: x + 0.25, y: y + 1.4, w: 2.35, h: 0.75, fontSize: 13, color: C.text1, valign: "top", objectName: `数据类型说明${i + 1}` });
   });
   analysis(s, [
-    "“检索困难导致退订”由四类数据支撑：问卷中的退订意向、行业退订率、市场预测与 AI 测试。",
-    "四类数据的对象、国家与性质各不相同（意向≠行为，预测≠测量），且缺乏追踪设计或实验设计。",
-    "只能提示二者可能相关，不能证明因果；报告方案（AI 接入行业数据）亦未经检验。",
+    "“检索困难导致退订”由意向、行为、预测、测试四类数据支撑。",
+    "四类数据的对象、国家与性质不同，且缺乏追踪设计或实验设计。",
+    "只能提示相关，不能证明因果；报告方案（AI 接入行业数据）亦未经检验。",
   ]);
   src(s, "来源：Gracenote 报告；普华永道、Veed Analytics 原文；退订率见 Broadband TV News 转述 Fabric 数据，Antenna 数据经 MediaPost 转述。");
   notes(s);
@@ -400,7 +403,7 @@ async function icon(Comp, hex, size = 256) {
   // ======================= 五、总结与启示 =======================
   pres.addSection({ title: "总结" });
   s = pres.addSlide({ masterName: "SECTION_DARK", sectionTitle: "总结" });
-  s.addText("五、总结与启示：逐环判断", { placeholder: "title" });
+  s.addText("两环部分成立、两环证据不足：结论应限于 AI 用户", { placeholder: "title" }); kicker(s, "五、总结与启示", true);
   [
     ["① 用户日益依赖 AI", "仅适用于 AI 用户；“加速”不成立", "部分成立", C.accent2],
     ["② 但对 AI 信任不足", "仅适用于 AI 用户", "部分成立", C.accent2],
@@ -431,7 +434,7 @@ async function icon(Comp, hex, size = 256) {
   // ======================= 附录一 =======================
   pres.addSection({ title: "附录（备问）" });
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "附录（备问）" });
-  s.addText("附录一：11 个数据来源的方法公开程度", { placeholder: "title" });
+  s.addText("11 个数据来源中，核心两项问卷最不透明", { placeholder: "title" }); kicker(s, "附录（备问）");
   const ST = { open: [C.accent2, "方法公开"], part: [C.accent5, "部分公开"], gap: [C.accent3, "关键信息未公开"] };
   [
     ["问卷", "Gracenote 2026 AI 调查", "线上 · 美国 AI 用户 · 4,003 人；抽样框、加权、应答率、各组样本量未公开", "gap"],
@@ -466,7 +469,7 @@ async function icon(Comp, hex, size = 256) {
 
   // ======================= 附录二 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "附录（备问）" });
-  s.addText("附录二：引用与数据口径核对", { placeholder: "title" });
+  s.addText("多处引用与原始来源的口径不一致", { placeholder: "title" }); kicker(s, "附录（备问）");
   const hd = (t) => ({ text: t, options: { bold: true, color: C.background1, fill: { color: C.text2 }, align: "center" } });
   s.addTable([
     [hd("报告表述"), hd("原始来源 / 图表本身显示")],
@@ -520,6 +523,8 @@ async function icon(Comp, hex, size = 256) {
     "| ② 但对 AI 信任不足 | 75% 会核查 AI 的回答 | 维度一 调查对象 | 部分成立：仅适用于 AI 用户 |",
     "| ③ 检索困难导致退订 | 14 分钟；54% 可能退订；5.5% 月退订率 | 维度二 研究总体；维度四 研究方法 | 证据不足：口径混用，因果未证 |",
     "| ④ AI 须接入可信数据 | 由前三环推出 | 维度四 研究方法 | 未经检验 |",
+    "",
+    "**制作要领：** 每页标题写成一句结论（只读标题即可读出完整论证），讲稿每页第一句先说出该结论，再给证据。详见《PPT制作要领_学习笔记.md》。",
     "",
     "**页面顺序：** 封面 → 汇报框架与核心观点 → 一、研究背景与研究问题 → 二、研究设计 → 三、报告内容（两页：发现 + 报告的解释）→ 四、方法评价（论证链总览 + 四个维度）→ 五、总结与启示（逐环判断）。",
     "",
