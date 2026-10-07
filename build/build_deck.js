@@ -27,6 +27,62 @@ const H = THEME.colors; // 只接受十六进制的选项（图表、线条）�
 const BAR_GRAY = "C9CED6";
 const RULE = "D5DAE1";
 
+// ---------- 动画分组 ----------
+// 每页一个数组，数组内每组对象同时淡入，组与组间隔 STEP 毫秒；标题、页码和细线不动
+const STEP = 350, FADE = 500;
+const seq = (n, f) => Array.from({ length: n }, (_, i) => f(i + 1));
+const ANALYSIS = ["事实", "原因", "影响"].map((k) => [`${k}标签`, `${k}内容`]);
+const MOTION = [
+  [["封面图"], ["封面分隔线", "封面数字", "封面问题"]],
+  [...seq(5, (i) => [`序号${i}`, `框架名${i}`]), ["结论卡", "结论"]],
+  [["背景"], ...seq(3, (i) => [`问题编号${i}`, `问题名${i}`, `问题内容${i}`]), ["报告封面阴影", "报告封面", "封面图注"], ["研究机构"]],
+  [["说明"]],
+  [...seq(2, (i) => [`数据卡${i}`, `数据${i}`, `数据说明${i}`]), ["解释标题", "原因1", "箭头1", "结果1"], ["原因2", "箭头2", "结果2"]],
+  seq(4, (i) => [`步骤卡${i}`, `步骤名${i}`, `步骤数字${i}`, `步骤说明${i}`, `链箭头${i - 1}`]),
+  [...seq(4, (i) => [`环节${i}`, `环节文字${i}`, `环节箭头${i - 1}`, `检验标签${i}`, `检验文字${i}`]), ["评价说明"]],
+  [[...seq(4, (i) => `总体圈${i}`), ...seq(3, (i) => `总体标签${i}`), "样本标签"], ...ANALYSIS],
+  [["原图阴影", "原图", "原图说明", "对比条"], ...ANALYSIS],
+  [...seq(2, (i) => [`对比卡${i}`, `对比机构${i}`, `对比数字${i}`, `对比分母${i}`]), ...ANALYSIS],
+  [[...seq(4, (i) => `数据类型卡${i}`), ...seq(4, (i) => `数据类型${i}`), ...seq(4, (i) => `数据类型数字${i}`)], ...ANALYSIS],
+  [...seq(4, (i) => [`判断环节${i}`, `判断标签${i}`, `判断标签文字${i}`]), ["讨论卡", "讨论问题"], ["可取之处"]],
+];
+
+// 生成 <p:timing>：页面出现后自动开始，各组以“与上一动画同时 + 延迟”的方式依次淡入
+function timingXml(xml, groups) {
+  if (!groups.length) return "";
+  const ids = {};
+  for (const m of xml.matchAll(/<p:cNvPr id="(\d+)" name="([^"]*)"/g)) (ids[m[2]] = ids[m[2]] || []).push(m[1]);
+  const isSp = (id) => new RegExp(`<p:sp><p:nvSpPr><p:cNvPr id="${id}" `).test(xml);
+  let ctn = 4;
+  const effects = [], built = [];
+  groups.forEach((names, g) => {
+    for (const name of names) {
+      for (const id of ids[name] || []) {
+        const a = ctn++, b = ctn++, c = ctn++;
+        const dur = name === "封面图" ? 900 : FADE;
+        effects.push(
+          `<p:par><p:cTn id="${a}" presetID="10" presetClass="entr" presetSubtype="0" fill="hold" grpId="0" nodeType="withEffect">` +
+          `<p:stCondLst><p:cond delay="${200 + g * STEP}"/></p:stCondLst><p:childTnLst>` +
+          `<p:set><p:cBhvr><p:cTn id="${b}" dur="1" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst></p:cTn>` +
+          `<p:tgtEl><p:spTgt spid="${id}"/></p:tgtEl><p:attrNameLst><p:attrName>style.visibility</p:attrName></p:attrNameLst></p:cBhvr>` +
+          `<p:to><p:strVal val="visible"/></p:to></p:set>` +
+          `<p:animEffect transition="in" filter="fade"><p:cBhvr><p:cTn id="${c}" dur="${dur}"/><p:tgtEl><p:spTgt spid="${id}"/></p:tgtEl></p:cBhvr></p:animEffect>` +
+          `</p:childTnLst></p:cTn></p:par>`);
+        if (isSp(id)) built.push(`<p:bldP spid="${id}" grpId="0" animBg="1"/>`);
+      }
+    }
+    const missing = names.filter((nm) => !ids[nm] && !/箭头0$/.test(nm));
+    if (missing.length) throw new Error(`动画分组找不到对象：${missing.join("、")}`);
+  });
+  return `<p:timing><p:tnLst><p:par><p:cTn id="1" dur="indefinite" restart="never" nodeType="tmRoot"><p:childTnLst>` +
+    `<p:seq concurrent="1" nextAc="seek"><p:cTn id="2" dur="indefinite" nodeType="mainSeq"><p:childTnLst>` +
+    `<p:par><p:cTn id="3" fill="hold"><p:stCondLst><p:cond delay="indefinite"/><p:cond evt="onBegin" delay="0"><p:tn val="2"/></p:cond></p:stCondLst>` +
+    `<p:childTnLst><p:par><p:cTn id="${ctn}" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst><p:childTnLst>${effects.join("")}</p:childTnLst></p:cTn></p:par></p:childTnLst></p:cTn></p:par>` +
+    `</p:childTnLst></p:cTn><p:prevCondLst><p:cond evt="onPrev" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:prevCondLst>` +
+    `<p:nextCondLst><p:cond evt="onNext" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:nextCondLst></p:seq>` +
+    `</p:childTnLst></p:cTn></p:par></p:tnLst>${built.length ? `<p:bldLst>${built.join("")}</p:bldLst>` : ""}</p:timing>`;
+}
+
 (async () => {
   const pres = new pptxgen();
   pres.layout = "LAYOUT_WIDE"; // 13.333 x 7.5 in
@@ -40,8 +96,8 @@ const RULE = "D5DAE1";
     title: "TITLE_DARK",
     background: { color: C.text2 },
     objects: [
-      { placeholder: { options: { name: "title", type: "title", x: 0.8, y: 2.0, w: 7.2, h: 1.8, fontSize: 40, bold: true, color: C.background1, valign: "bottom", align: "left", margin: 0 }, text: "" } },
-      { placeholder: { options: { name: "body", type: "body", x: 0.8, y: 4.05, w: 7.2, h: 0.6, fontSize: 18, color: C.accent6, valign: "top", align: "left", margin: 0 }, text: "" } },
+      { placeholder: { options: { name: "title", type: "title", x: 0.8, y: 1.45, w: 5.9, h: 1.75, fontSize: 40, bold: true, color: C.background1, valign: "bottom", align: "left", margin: 0 }, text: "" } },
+      { placeholder: { options: { name: "body", type: "body", x: 0.8, y: 3.35, w: 5.9, h: 0.5, fontSize: 18, color: C.accent6, valign: "top", align: "left", margin: 0 }, text: "" } },
     ],
   });
   pres.defineSlideMaster({
@@ -72,7 +128,13 @@ const RULE = "D5DAE1";
     text(s, kicker, { x: dark ? 0.8 : 0.6, y: dark ? 0.35 : 0.3, w: 8, h: 0.35, fontSize: 14, bold: true, color: dark ? C.accent4 : C.accent3, valign: "middle", objectName: "章节标记" });
     s.addText(title, { placeholder: "title" });
   };
-  const arrowR = (s, x, y, h, color = C.accent5) => text(s, "→", { x, y, w: 0.3, h, fontSize: 20, color, align: "center", valign: "middle", objectName: "箭头" });
+  const arrowR = (s, x, y, h, name = "箭头") => text(s, "→", { x, y, w: 0.3, h, fontSize: 20, color: C.accent5, align: "center", valign: "middle", objectName: name });
+  // 图片：白底矩形承托柔和阴影（图片本身不支持阴影）
+  const framedImage = (s, file, x, y, w, h, name) => {
+    s.addShape(pres.shapes.RECTANGLE, { x, y, w, h, fill: { color: "FFFFFF" }, line: { color: "E3E7EC", width: 0.5 },
+      shadow: { type: "outer", color: "1F2A44", opacity: 0.18, blur: 14, offset: 4, angle: 90 }, objectName: `${name}阴影` });
+    s.addImage({ path: path.join(__dirname, "assets", file), x, y, w, h, objectName: name });
+  };
   // 评价页右栏：事实 / 原因 / 影响，以细线分行
   function analysis(s, rows) {
     [["事实", C.accent1], ["原因", C.accent5], ["影响", C.accent3]].forEach(([k, col], i) => {
@@ -89,14 +151,16 @@ const RULE = "D5DAE1";
   // ======================= 封面 =======================
   pres.addSection({ title: "开场" });
   let s = pres.addSlide({ masterName: "TITLE_DARK", sectionTitle: "开场" });
-  text(s, "市场调研：方法与实践 · 课后作业", { x: 0.8, y: 1.3, w: 7.2, h: 0.4, fontSize: 15, color: C.accent4, objectName: "课程名" });
+  s.addImage({ path: path.join(__dirname, "assets", "cover_hero.jpg"), x: 7.0, y: 0, w: 6.333, h: 7.5, objectName: "封面图" });
+  text(s, "市场调研：方法与实践 · 课后作业", { x: 0.8, y: 0.95, w: 5.9, h: 0.4, fontSize: 15, color: C.accent4, objectName: "课程名" });
   s.addText("AI 时代的电视搜索\n与内容发现", { placeholder: "title" });
   s.addText("Gracenote（尼尔森旗下）2026 年研究报告评析", { placeholder: "body" });
-  rule(s, 8.9, 1.9, 3.6, "3A4766", "封面分隔线");
-  text(s, "54%", { x: 8.9, y: 2.05, w: 3.6, h: 1.6, fontSize: 96, bold: true, fontFace: "Arial", color: C.accent4, valign: "middle", objectName: "封面数字" });
-  text(s, "13–14 岁受访者每日使用 AI", { x: 8.9, y: 3.7, w: 3.6, h: 0.4, fontSize: 16, color: C.background1, objectName: "封面数字说明" });
-  rule(s, 8.9, 4.35, 3.6, "3A4766", "封面分隔线");
-  text(s, "该比例来自哪类样本？", { x: 8.9, y: 4.5, w: 3.6, h: 0.45, fontSize: 16, color: C.accent6, objectName: "封面问题" });
+  rule(s, 0.8, 4.55, 5.6, "3A4766", "封面分隔线");
+  text(s, "54%", { x: 0.8, y: 4.75, w: 2.0, h: 1.0, fontSize: 48, bold: true, fontFace: "Arial", color: C.accent4, valign: "middle", objectName: "封面数字" });
+  text(s, [
+    { text: "13–14 岁受访者每日使用 AI", options: { color: C.background1, breakLine: true } },
+    { text: "该比例来自哪类样本？", options: { color: C.accent6 } },
+  ], { x: 2.9, y: 4.75, w: 3.6, h: 1.0, fontSize: 16, valign: "middle", paraSpaceAfter: 4, objectName: "封面问题" });
   notes(s);
 
   // ======================= 汇报框架 =======================
@@ -120,23 +184,21 @@ const RULE = "D5DAE1";
   pres.addSection({ title: "报告介绍" });
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
   head(s, "01  研究背景与问题", "研究问题：AI 如何改变节目检索");
-  text(s, "背景：流媒体平台增多，节目分散，检索成本上升；AI 聊天机器人成为新的检索工具。", { x: 0.6, y: 1.65, w: 12.1, h: 0.5, fontSize: 18, color: C.text1, valign: "middle", objectName: "背景" });
-  [
-    ["问题一", "使用频率", "各年龄层 AI 使用频率"],
-    ["问题二", "检索难度", "检索耗时与退订意向"],
-    ["问题三", "信任程度", "对 AI 回答的核查"],
-  ].forEach(([no, k, v], i) => {
-    const x = 0.6 + i * 4.1;
-    card(s, x, 2.45, 3.8, 2.2, C.background2, `问题卡${i + 1}`);
-    text(s, no, { x: x + 0.35, y: 2.65, w: 3.1, h: 0.35, fontSize: 14, bold: true, color: C.accent5, objectName: `问题编号${i + 1}` });
-    text(s, k, { x: x + 0.35, y: 3.05, w: 3.1, h: 0.6, fontSize: 24, bold: true, color: C.text2, valign: "middle", objectName: `问题名${i + 1}` });
-    text(s, v, { x: x + 0.35, y: 3.75, w: 3.1, h: 0.6, fontSize: 17, color: C.text1, valign: "top", objectName: `问题内容${i + 1}` });
+  text(s, "背景：流媒体平台增多，节目分散，检索成本上升；AI 聊天机器人成为新的检索工具。", { x: 0.6, y: 1.7, w: 7.2, h: 0.8, fontSize: 18, color: C.text1, valign: "middle", objectName: "背景" });
+  [["问题一", "使用频率", "各年龄层 AI 使用频率"], ["问题二", "检索难度", "检索耗时与退订意向"], ["问题三", "信任程度", "对 AI 回答的核查"]].forEach(([no, k, v], i) => {
+    const y = 2.75 + i * 0.85;
+    rule(s, 0.6, y, 7.2);
+    text(s, no, { x: 0.6, y, w: 1.0, h: 0.85, fontSize: 14, bold: true, color: C.accent5, valign: "middle", objectName: `问题编号${i + 1}` });
+    text(s, k, { x: 1.65, y, w: 2.2, h: 0.85, fontSize: 21, bold: true, color: C.text2, valign: "middle", objectName: `问题名${i + 1}` });
+    text(s, v, { x: 3.95, y, w: 3.85, h: 0.85, fontSize: 18, color: C.text1, valign: "middle", objectName: `问题内容${i + 1}` });
   });
-  rule(s, 0.6, 5.1, 12.1);
+  rule(s, 0.6, 5.3, 7.2);
   text(s, [
     { text: "研究机构  ", options: { bold: true, color: C.accent3 } },
     { text: "Gracenote，尼尔森旗下节目数据公司。报告建议接入的行业数据，即其主营业务。", options: { color: C.text1 } },
-  ], { x: 0.6, y: 5.25, w: 12.1, h: 0.7, fontSize: 18, valign: "middle", objectName: "研究机构" });
+  ], { x: 0.6, y: 5.45, w: 7.2, h: 0.85, fontSize: 17, valign: "middle", objectName: "研究机构" });
+  framedImage(s, "report_cover.jpg", 8.35, 2.75, 4.35, 2.64, "报告封面");
+  text(s, "报告封面 · Gracenote，2026 年 4 月", { x: 8.35, y: 5.55, w: 4.35, h: 0.35, fontSize: 13, color: C.accent5, objectName: "封面图注" });
   notes(s);
 
   // ======================= 02 研究设计 =======================
@@ -177,7 +239,7 @@ const RULE = "D5DAE1";
     const y = 4.85 + i * 0.75;
     rule(s, 0.6, y, 12.1);
     text(s, cause, { x: 0.6, y, w: 6.5, h: 0.75, fontSize: 20, color: C.text1, valign: "middle", objectName: `原因${i + 1}` });
-    arrowR(s, 7.2, y, 0.75);
+    arrowR(s, 7.2, y, 0.75, `箭头${i + 1}`);
     text(s, effect, { x: 7.7, y, w: 5.0, h: 0.75, fontSize: 20, bold: true, color: C.text2, valign: "middle", objectName: `结果${i + 1}` });
   });
   rule(s, 0.6, 6.35, 12.1);
@@ -197,7 +259,7 @@ const RULE = "D5DAE1";
     text(s, k, { x: x + 0.3, y: 2.1, w: 2.3, h: 0.5, fontSize: 20, bold: true, color: last ? C.background1 : C.text2, objectName: `步骤名${i + 1}` });
     text(s, num, { x: x + 0.3, y: 3.0, w: 2.3, h: 1.1, fontSize: num.length > 4 ? 36 : 44, bold: true, fontFace: "Arial", color: last ? C.accent4 : C.accent1, valign: "middle", objectName: `步骤数字${i + 1}` });
     text(s, d, { x: x + 0.3, y: 4.3, w: 2.3, h: 1.2, fontSize: 16, color: last ? C.accent6 : C.text1, valign: "top", objectName: `步骤说明${i + 1}` });
-    if (!last) arrowR(s, x + 2.8, 1.85, 4.1);
+    if (!last) arrowR(s, x + 2.8, 1.85, 4.1, `链箭头${i + 1}`);
   });
   src(s, "数据：尼尔森收视测量；调查二（六国）；Veed Analytics 测试（报告引用）。");
   notes(s);
@@ -215,7 +277,7 @@ const RULE = "D5DAE1";
     const x = 0.6 + i * 3.1;
     card(s, x, 1.8, 2.8, 0.95, C.text2, `环节${i + 1}`);
     text(s, k, { x, y: 1.8, w: 2.8, h: 0.95, fontSize: 19, bold: true, color: C.background1, align: "center", valign: "middle", objectName: `环节文字${i + 1}` });
-    if (i < 3) arrowR(s, x + 2.8, 1.8, 0.95);
+    if (i < 3) arrowR(s, x + 2.8, 1.8, 0.95, `环节箭头${i + 1}`);
     text(s, "检验", { x, y: 3.0, w: 2.8, h: 0.35, fontSize: 13, color: C.accent5, align: "center", objectName: `检验标签${i + 1}` });
     rule(s, x, 3.4, 2.8);
     text(s, dims, { x, y: 3.5, w: 2.8, h: 1.3, fontSize: 20, bold: true, color: C.accent1, align: "center", valign: "middle", objectName: `检验文字${i + 1}` });
@@ -251,15 +313,13 @@ const RULE = "D5DAE1";
   // ======================= 调查范围 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
   head(s, "04  方法评价", "调查范围：“14 分钟”为六国均值");
-  s.addChart(pres.charts.BAR, [{ name: "检索时长", labels: ["巴西", "法国", "德国", "墨西哥", "英国", "美国", "六国均值"], values: [12, 26, 11, 11, 12, 12, 14] }], {
-    x: 0.6, y: 1.7, w: 6.0, h: 4.7, barDir: "bar", catAxisOrientation: "maxMin",
-    chartColors: [BAR_GRAY, BAR_GRAY, BAR_GRAY, BAR_GRAY, BAR_GRAY, H.accent1, H.accent3],
-    showTitle: true, title: "平均检索时长（分钟）", titleFontSize: 15, titleColor: H.accent5, titleFontFace: "+mn-lt",
-    showValue: true, dataLabelPosition: "outEnd", dataLabelFontSize: 15, dataLabelColor: H.dk1, dataLabelFontFace: "+mn-lt",
-    catAxisLabelFontSize: 16, catAxisLabelColor: H.dk1, catAxisLabelFontFace: "+mn-lt",
-    valAxisHidden: true, valAxisMinVal: 0, valAxisMaxVal: 30, valGridLine: { style: "none" }, catGridLine: { style: "none" },
-    catAxisLineShow: false, showLegend: false, barGapWidthPct: 45, objectName: "分国家检索时长图",
-  });
+  framedImage(s, "daily_tv_usage_marked.jpg", 0.6, 1.8, 6.0, 3.49, "原图");
+  text(s, "报告原图：橙框为六国均值，与尼尔森美国收视数据并列", { x: 0.6, y: 5.4, w: 6.0, h: 0.35, fontSize: 13, color: C.accent5, objectName: "原图说明" });
+  text(s, [
+    { text: "美国 ", options: { color: C.text1 } }, { text: "12", options: { bold: true, color: C.accent1 } }, { text: " 分钟     法国 ", options: { color: C.text1 } },
+    { text: "26", options: { bold: true, color: C.text2 } }, { text: " 分钟     六国均值 ", options: { color: C.text1 } },
+    { text: "14", options: { bold: true, color: C.accent3 } }, { text: " 分钟", options: { color: C.text1 } },
+  ], { x: 0.6, y: 5.8, w: 6.0, h: 0.5, fontSize: 18, valign: "middle", objectName: "对比条" });
   analysis(s, [
     "六国均值被置于\n美国收视图表中",
     "六国等权平均，\n法国 26 分钟抬高均值",
@@ -392,6 +452,14 @@ const RULE = "D5DAE1";
   const zip = await JSZip.loadAsync(fs.readFileSync(OUT));
   const part = "ppt/theme/theme1.xml";
   zip.file(part, (await zip.file(part).async("string")).replace(/<a:ea typeface=""\s*\/>/g, '<a:ea typeface="Microsoft YaHei"/>'));
+
+  // 动画：全部页面淡入切换；正讲页的内容按阅读顺序自动依次淡入（无需点击）
+  for (let i = 1; zip.file(`ppt/slides/slide${i}.xml`); i++) {
+    const f = `ppt/slides/slide${i}.xml`;
+    let xml = await zip.file(f).async("string");
+    xml = xml.replace("</p:clrMapOvr>", `</p:clrMapOvr><p:transition spd="med"><p:fade/></p:transition>${timingXml(xml, MOTION[i - 1] || [])}`);
+    zip.file(f, xml);
+  }
   fs.writeFileSync(OUT, await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }));
 
   // 讲稿 Markdown

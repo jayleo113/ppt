@@ -2,11 +2,11 @@
 
 《市场调研：方法与实践》课后作业：介绍并评价一份国际市场调研机构的最新报告。
 
-- **`Gracenote报告解读_课堂汇报.pptx`**：正讲 12 页 + 附录 2 页（16:9），每页备注中附讲稿，深蓝为主，橙色只标问题。
+- **`Gracenote报告解读_课堂汇报.pptx`**：正讲 12 页 + 附录 2 页（16:9），每页备注中附讲稿，深蓝为主，橙色只标问题。页面之间淡入切换；正讲页的内容在进入页面后按阅读顺序自动淡入，无需点击。
 - **`讲稿_4-5分钟.md`**：逐页讲稿、时间分配（约 4 分 10 秒）和可能被问到的问题。
 - **`Gracenote报告_数据来源与采集方式核查.md`**：报告引用的 11 个数据来源逐一核查，附核实程度标记与原文链接。
 - **`PPT制作要领_学习笔记.md`**：参考的制作要领（断言—证据式、金字塔原理、只读标题测试、多媒体学习原则）及本次修改对照。
-- **`build/`**：生成 PPT 和讲稿的脚本。讲稿文本在 `build/script.js`，PPT 备注和讲稿文件都从这里生成。
+- **`build/`**：生成 PPT 和讲稿的脚本。讲稿文本在 `build/script.js`，PPT 备注和讲稿文件都从这里生成。`build/assets/` 中的图片取自报告原文（封面与第 9 页“Daily TV usage”图），由 `build/prepare_images.py` 裁切、加标注。
 
 ## 报告
 Gracenote（尼尔森旗下），*TV Search and Discovery in the AI Era*，2026 年 4 月。
@@ -30,6 +30,8 @@ Gracenote（尼尔森旗下），*TV Search and Discovery in the AI Era*，2026 
 
 ## 重新生成
 ```bash
+# 图片已在 build/assets/ 中；如需重做：先把报告第 1 页导出为 PNG
+python3 build/prepare_images.py <封面.png> <Daily TV usage 图.jpg>
 npm install pptxgenjs
 node build/build_deck.js
 ```
