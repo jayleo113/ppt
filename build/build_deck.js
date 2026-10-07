@@ -118,7 +118,7 @@ async function icon(Comp, hex, size = 256) {
 
   // ======================= 框架与核心观点 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "开场" });
-  head(s, "汇报框架", "趋势可参考，但论证链关键环节证据不足");
+  head(s, "汇报框架", "趋势大体可信，但结论推得太远");
   ["研究背景与问题", "研究设计", "报告内容", "方法评价（重点）", "总结"].forEach((t, i) => {
     const y = 1.75 + i * 0.95, focus = i === 3;
     card(s, 0.6, y, 6.2, 0.8, focus ? C.accent6 : C.background2, `框架行${i + 1}`);
@@ -127,19 +127,19 @@ async function icon(Comp, hex, size = 256) {
   });
   card(s, 7.2, 1.75, 5.5, 4.6, C.text2, "核心观点卡");
   text(s, [
-    { text: "核心观点", options: { fontSize: 16, bold: true, color: C.accent4, breakLine: true } },
-    { text: "报告的趋势判断有参考价值；但论证的关键环节证据不足，结论应限于调查对象。", options: { fontSize: 24, bold: true, color: C.background1 } },
+    { text: "我的判断", options: { fontSize: 16, bold: true, color: C.accent4, breakLine: true } },
+    { text: "报告看到的趋势大体可信；问题在于，它把一群 AI 用户的回答，推成了更大人群的结论。", options: { fontSize: 24, bold: true, color: C.background1 } },
   ], { x: 7.6, y: 1.95, w: 4.7, h: 4.2, valign: "middle", paraSpaceAfter: 18, objectName: "核心观点" });
   notes(s);
 
   // ======================= 01 背景与问题 =======================
   pres.addSection({ title: "报告介绍" });
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  head(s, "01  研究背景与问题", "内容分散使检索变难，AI 能否成为新入口？");
+  head(s, "01  研究背景与问题", "节目越来越难找，AI 会不会成为新的入口？");
   [
-    ["问题一", "使用行为", "各年龄群体如何用 AI 检索信息？"],
-    ["问题二", "检索困难", "内容分散是否影响订阅？"],
-    ["问题三", "信任程度", "用户是否信任 AI 的回答？"],
+    ["问题一", "怎么用 AI", "不同年龄的人，如何用 AI 找信息？"],
+    ["问题二", "找不到会怎样", "节目难找，会不会让人退订？"],
+    ["问题三", "信不信 AI", "人们是否相信 AI 给的答案？"],
   ].forEach(([no, k, v], i) => {
     const x = 0.6 + i * 4.1;
     card(s, x, 1.75, 3.8, 2.75, C.background2, `问题卡${i + 1}`);
@@ -150,13 +150,13 @@ async function icon(Comp, hex, size = 256) {
   card(s, 0.6, 4.85, 12.1, 1.45, C.text2, "机构条");
   text(s, [
     { text: "研究机构  ", options: { fontSize: 16, bold: true, color: C.accent4 } },
-    { text: "Gracenote，尼尔森旗下，主营节目数据服务——与报告主张直接相关。", options: { fontSize: 18, color: C.background1 } },
+    { text: "Gracenote 隶属尼尔森，本身就做节目数据；报告最后的建议，恰好落在它自己的业务上。", options: { fontSize: 18, color: C.background1 } },
   ], { x: 0.95, y: 4.85, w: 11.5, h: 1.45, valign: "middle", objectName: "研究机构" });
   notes(s);
 
   // ======================= 02 研究设计 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  head(s, "02  研究设计", "报告结论主要来自两项线上问卷");
+  head(s, "02  研究设计", "两份线上问卷，撑起了报告的大部分结论");
   const th = (t) => ({ text: t, options: { bold: true, color: C.background1, fill: { color: C.text2 }, fontSize: 18 } });
   const tl = (t) => ({ text: t, options: { bold: true, color: C.accent1, fill: { color: C.background2 } } });
   s.addTable([
@@ -172,16 +172,16 @@ async function icon(Comp, hex, size = 256) {
   
   text(s, [
     { text: "注：", options: { bold: true, color: C.accent3 } },
-    { text: "两项调查均未公开抽样方式。另引用尼尔森、皮尤等共 11 个来源（见附录）。", options: { color: C.text1 } },
+    { text: "样本如何抽取，两份调查都没有交代。另引用尼尔森、皮尤等共 11 个来源（见附录）。", options: { color: C.text1 } },
   ], { x: 0.6, y: 6.05, w: 12.1, h: 0.5, fontSize: 18, valign: "middle", objectName: "说明条" });
   notes(s);
 
   // ======================= 03 报告内容（一） =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  head(s, "03  报告内容（一）", "报告发现：年轻用户依赖 AI，但信任不足");
+  head(s, "03  报告内容（一）", "年轻人越来越依赖 AI，却并不完全信任它");
   [
-    [0.6, "54%", "13–14 岁 AI 用户\n每天使用"],
-    [6.75, "75%", "受访者会核查\nAI 的回答"],
+    [0.6, "54%", "13–14 岁 AI 用户\n每天都用"],
+    [6.75, "75%", "受访者会回头\n核对 AI 的答案"],
   ].forEach(([x, num, d], i) => {
     card(s, x, 1.75, 5.95, 2.3, C.background2, `大数字卡${i + 1}`);
     text(s, num, { x: x + 0.35, y: 1.75, w: 2.4, h: 2.3, fontSize: 64, bold: true, fontFace: "Arial", color: C.accent1, valign: "middle", objectName: `大数字${i + 1}` });
@@ -189,8 +189,8 @@ async function icon(Comp, hex, size = 256) {
   });
   text(s, "报告的解释", { x: 0.6, y: 4.3, w: 4, h: 0.45, fontSize: 18, bold: true, color: C.text2, objectName: "解释标题" });
   [
-    ["AI 回答直接、完整、可追问", "用户偏好 AI"],
-    ["大模型可能生成看似合理的错误信息", "用户难以完全信任"],
+    ["AI 能直接给出答案，还能接着追问", "所以受欢迎"],
+    ["但它也会给出看似合理的错误答案", "所以还要再核对"],
   ].forEach(([cause, effect], i) => {
     const y = 4.85 + i * 0.8;
     card(s, 0.6, y, 7.9, 0.65, C.background2, `原因${i + 1}`);
@@ -202,12 +202,12 @@ async function icon(Comp, hex, size = 256) {
 
   // ======================= 03 报告内容（二） =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  head(s, "03  报告内容（二）", "报告认为：内容分散导致退订，AI 须接入可信数据");
+  head(s, "03  报告内容（二）", "从内容分散到用户流失，报告这样推理");
   [
-    ["内容分散", "54%", "美国电视时长来自联网电视"],
-    ["检索变难", "14 分钟", "平均寻找节目时长"],
-    ["退订风险", "54%", "18–34 岁表示可能退订"],
-    ["接入可信数据", "约 2/3", "AI 答对播出平台"],
+    ["内容分散", "54%", "联网电视占\n美国电视时长"],
+    ["找起来费时", "14 分钟", "平均找一个节目"],
+    ["可能退订", "54%", "18–34 岁说可能退订"],
+    ["接入可靠数据", "约 2/3", "AI 能答对的播出平台"],
   ].forEach(([k, num, d], i) => {
     const x = 0.6 + i * 3.1, last = i === 3;
     card(s, x, 1.85, 2.8, 4.1, last ? C.text2 : C.background2, `链条卡${i + 1}`);
@@ -223,12 +223,12 @@ async function icon(Comp, hex, size = 256) {
   // ======================= 04 评价思路 =======================
   pres.addSection({ title: "方法评价" });
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  head(s, "04  方法评价", "用课上四个维度，逐环检验报告的论证");
+  head(s, "04  方法评价", "沿着这条推理，逐环看证据站不站得住");
   [
-    ["① 依赖 AI", ["维度一  调查对象", "维度三  调查时间"]],
-    ["② 信任不足", ["维度一  调查对象"]],
-    ["③ 检索难致退订", ["维度二  研究总体", "维度四  研究方法"]],
-    ["④ 接入可信数据", ["维度四  研究方法"]],
+    ["① 依赖 AI", ["调查对象", "调查时间"]],
+    ["② 信任不足", ["调查对象"]],
+    ["③ 难找致退订", ["研究总体", "研究方法"]],
+    ["④ 接入可靠数据", ["研究方法"]],
   ].forEach(([k, dims], i) => {
     const x = 0.6 + i * 3.1;
     card(s, x, 1.8, 2.8, 1.0, C.text2, `环节${i + 1}`);
@@ -236,18 +236,18 @@ async function icon(Comp, hex, size = 256) {
     if (i < 3) arrowR(s, x + 2.8, 1.8, 1.0);
     text(s, "↓", { x, y: 2.85, w: 2.8, h: 0.45, fontSize: 20, bold: true, color: C.accent5, align: "center", valign: "middle", objectName: `下箭头${i + 1}` });
     card(s, x, 3.35, 2.8, 1.75, C.background2, `检验${i + 1}`);
-    text(s, dims.map((d, j) => ({ text: d, options: { breakLine: j < dims.length - 1 } })), { x: x + 0.25, y: 3.35, w: 2.4, h: 1.75, fontSize: 18, bold: true, color: C.accent1, valign: "middle", paraSpaceAfter: 6, objectName: `检验文字${i + 1}` });
+    text(s, dims.map((d, j) => ({ text: d, options: { breakLine: j < dims.length - 1 } })), { x: x + 0.25, y: 3.35, w: 2.4, h: 1.75, fontSize: 20, bold: true, color: C.accent1, align: "center", valign: "middle", paraSpaceAfter: 6, objectName: `检验文字${i + 1}` });
   });
   card(s, 0.6, 5.45, 12.1, 0.85, C.background2, "依据条");
   text(s, [
-    { text: "依据：", options: { bold: true, color: C.accent3 } },
-    { text: "课上春晚满意度调查案例——对象、总体、时间、方法不同，结论不同。", options: { color: C.text1 } },
+    { text: "为什么看这四处：", options: { bold: true, color: C.accent3 } },
+    { text: "同一个问题，问谁、问哪里的人、什么时候问、怎么问，得到的答案都可能不同。", options: { color: C.text1 } },
   ], { x: 0.9, y: 5.45, w: 11.6, h: 0.85, fontSize: 18, valign: "middle", objectName: "评价依据" });
   notes(s);
 
   // ======================= 维度一 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  head(s, "04  方法评价 · 维度一  调查对象", "样本仅为 AI 用户，结论却推及“美国人”");
+  head(s, "04  方法评价 · 调查对象", "问的是 AI 用户，说的却是“美国人”");
   [
     [0.9, 1.7, 4.8, C.background2, "美国人口"],
     [1.35, 2.4, 3.9, C.accent6, "互联网用户"],
@@ -262,16 +262,16 @@ async function icon(Comp, hex, size = 256) {
     { text: "4,003", options: { fontSize: 24, bold: true, fontFace: "Arial", color: C.background1 } },
   ], { x: 2.3, y: 4.1, w: 2.0, h: 1.2, align: "center", valign: "middle", objectName: "样本标签" });
   analysis(s, [
-    "样本是 4,003 名 AI 聊天机器人用户",
-    "以“使用 AI”为条件筛选的线上样本",
-    "结论只适用于 AI 用户，与课上 Durex 案例同类",
+    "4,003 名受访者\n全是 AI 聊天机器人用户",
+    "按“用不用 AI”筛选，\n样本偏向会用的人",
+    "网络样本不等于总体，\n结论只适用于 AI 用户",
   ]);
   src(s, "来源：Gracenote 报告；尼尔森新闻稿。");
   notes(s);
 
   // ======================= 维度二 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  head(s, "04  方法评价 · 维度二  研究总体", "“14 分钟”是六国均值，美国实为 12 分钟");
+  head(s, "04  方法评价 · 研究总体", "“14 分钟”其实是六国平均，美国是 12 分钟");
   s.addChart(pres.charts.BAR, [{ name: "寻找节目时长", labels: ["巴西", "法国", "德国", "墨西哥", "英国", "美国", "六国均值"], values: [12, 26, 11, 11, 12, 12, 14] }], {
     x: 0.6, y: 1.65, w: 6.0, h: 4.8, barDir: "bar", catAxisOrientation: "maxMin",
     chartColors: [BAR_GRAY, BAR_GRAY, BAR_GRAY, BAR_GRAY, BAR_GRAY, H.accent1, H.accent3],
@@ -282,16 +282,16 @@ async function icon(Comp, hex, size = 256) {
     catAxisLineShow: false, showLegend: false, barGapWidthPct: 40, objectName: "分国家寻找时长图",
   });
   analysis(s, [
-    "六国均值被放进美国收视图表",
-    "法国 26 分钟拉高了等权均值",
-    "高估美国用户的检索困难",
+    "图里的“14 分钟”，\n是六个国家的平均",
+    "六国直接平均，\n法国的 26 分钟拉高了它",
+    "放进美国收视图里，\n容易高估美国的困难",
   ]);
   src(s, "来源：Gracenote 2025 年报告《State of Play》分国家数据（每国 500 人）。");
   notes(s);
 
   // ======================= 维度三 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  head(s, "04  方法评价 · 维度三  调查时间", "两项调查分母不同，“加速”结论不成立");
+  head(s, "04  方法评价 · 调查时间", "分母不一样，“加速”也就无从谈起");
   [
     [1.75, "皮尤研究中心（2025 年秋）", "24%", "全体 13–14 岁青少年", C.accent5],
     [4.15, "本报告（2026 年初）", "54%", "13–14 岁 AI 用户", C.accent1],
@@ -305,16 +305,16 @@ async function icon(Comp, hex, size = 256) {
     ], { x: 3.4, y: y + 0.7, w: 3.0, h: 1.3, valign: "middle", objectName: `对比分母${i + 1}` });
   });
   analysis(s, [
-    "以皮尤 30% 对比本报告 54%，称使用“加速”",
-    "分母不同：全体青少年 vs AI 用户",
-    "同一口径下差距仅约 10 个百分点",
+    "拿皮尤去年秋的 30%，\n比本报告今年初的 54%",
+    "皮尤问全体青少年，\n本报告只问 AI 用户",
+    "分母统一后，\n差距只剩约 10 个百分点",
   ]);
   src(s, "来源：皮尤《Teens, Social Media and AI Chatbots 2025》数据表（使用者中每日使用 44%）。");
   notes(s);
 
   // ======================= 维度四 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  head(s, "04  方法评价 · 维度四  研究方法", "四类数据不足以证明“检索困难导致退订”");
+  head(s, "04  方法评价 · 研究方法", "几类不同的数据，拼不出“找不到就退订”");
   [
     ["意向 · 问卷", "54%"], ["行为 · 退订率", "5.5%"], ["预测 · 普华永道", "3,185 亿美元"], ["测试 · AI 答题", "约 2/3"],
   ].forEach(([k, num], i) => {
@@ -324,9 +324,9 @@ async function icon(Comp, hex, size = 256) {
     text(s, num, { x: x + 0.3, y: y + 0.8, w: 2.5, h: 1.1, fontSize: num.length > 5 ? 26 : 40, bold: true, fontFace: "Arial", color: C.text2, valign: "middle", objectName: `数据类型数字${i + 1}` });
   });
   analysis(s, [
-    "因果链由四类不同数据拼接而成",
-    "数据性质不同，且无追踪或实验",
-    "只能提示相关，不能证明因果",
+    "意愿、退订率、预测、测试\n被串成一条链",
+    "有的是想法，有的是行为，\n有的只是预测",
+    "能说明相关，\n说明不了谁导致了谁",
   ]);
   src(s, "来源：Gracenote 报告；普华永道、Veed Analytics 原文；Fabric 数据经 Broadband TV News 转述。");
   notes(s);
@@ -334,12 +334,12 @@ async function icon(Comp, hex, size = 256) {
   // ======================= 05 总结 =======================
   pres.addSection({ title: "总结" });
   s = pres.addSlide({ masterName: "SECTION_DARK", sectionTitle: "总结" });
-  head(s, "05  总结", "两环部分成立、两环证据不足：结论应限于 AI 用户", true);
+  head(s, "05  总结", "趋势可以参考，结论需要收窄", true);
   [
     ["① 依赖 AI", "部分成立", C.accent1],
     ["② 信任不足", "部分成立", C.accent1],
-    ["③ 检索难致退订", "证据不足", C.accent3],
-    ["④ 接入可信数据", "未经检验", C.accent5],
+    ["③ 难找致退订", "证据不足", C.accent3],
+    ["④ 接入可靠数据", "未经检验", C.accent5],
   ].forEach(([k, tag, col], i) => {
     const y = 1.95 + i * 1.0;
     card(s, 0.8, y, 7.4, 0.82, "2C3A5C", `判断行${i + 1}`);
@@ -347,20 +347,20 @@ async function icon(Comp, hex, size = 256) {
     pill(s, 6.2, y + 0.17, 1.75, 0.48, col, tag, 15);
   });
   text(s, [
-    { text: "优点：", options: { bold: true, color: C.accent4 } },
-    { text: "公开了样本量、时间与年龄范围，图表数据经复核基本一致。", options: { color: C.accent6 } },
+    { text: "可取之处：", options: { bold: true, color: C.accent4 } },
+    { text: "样本量、时间、年龄都交代清楚，图里的数字经得起复算。", options: { color: C.accent6 } },
   ], { x: 0.8, y: 6.05, w: 11.7, h: 0.5, fontSize: 16, valign: "middle", objectName: "优点" });
   card(s, 8.7, 1.95, 3.85, 3.82, C.background1, "讨论卡");
   text(s, [
-    { text: "讨论问题", options: { fontSize: 16, bold: true, color: C.accent3, breakLine: true } },
-    { text: "如何设计调查，才能检验“检索困难导致退订”？", options: { fontSize: 22, bold: true, color: C.text2 } },
+    { text: "留给大家", options: { fontSize: 16, bold: true, color: C.accent3, breakLine: true } },
+    { text: "要验证“找不到就退订”，调查该怎么设计？", options: { fontSize: 22, bold: true, color: C.text2 } },
   ], { x: 9.05, y: 2.1, w: 3.2, h: 3.5, valign: "middle", paraSpaceAfter: 14, objectName: "讨论问题" });
   notes(s);
 
   // ======================= 附录一 =======================
   pres.addSection({ title: "附录（备问）" });
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "附录（备问）" });
-  head(s, "附录（备问）", "11 个数据来源中，核心两项问卷最不透明");
+  head(s, "附录（备问）", "11 个来源里，报告自己的两份问卷最不透明");
   const ST = { open: [C.accent1, "方法公开"], part: [C.accent5, "部分公开"], gap: [C.accent3, "关键信息未公开"] };
   [
     ["Gracenote 2026 AI 调查", "线上 · 美国 AI 用户 4,003 人", "gap"],
@@ -389,7 +389,7 @@ async function icon(Comp, hex, size = 256) {
 
   // ======================= 附录二 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "附录（备问）" });
-  head(s, "附录（备问）", "多处引用与原始来源的口径不一致");
+  head(s, "附录（备问）", "几处引用，和原始来源的说法并不一致");
   const hd = (t) => ({ text: t, options: { bold: true, color: C.background1, fill: { color: C.text2 }, align: "center" } });
   s.addTable([
     [hd("报告表述"), hd("原始来源")],
@@ -430,18 +430,18 @@ async function icon(Comp, hex, size = 256) {
     "",
     "## 汇报主线",
     "",
-    "**核心观点：** 报告的趋势判断有参考价值；但论证的关键环节证据不足，结论应限于调查对象。",
+    "**我的判断：** 报告看到的趋势大体可信；问题在于，它把一群 AI 用户的回答，推成了更大人群的结论。",
     "",
-    "**报告的论证链：** ① 用户依赖 AI → ② 但信任不足 → ③ 检索困难导致退订 → ④ AI 须接入可信数据。",
+    "**报告的推理：** ① 年轻人依赖 AI → ② 但不完全信任 → ③ 节目难找导致退订 → ④ AI 需要接入可靠数据。",
     "",
-    "| 环节 | 检验维度 | 判断 |",
+    "| 环节 | 从哪里看 | 判断 |",
     "|---|---|---|",
-    "| ① 依赖 AI | 维度一 调查对象；维度三 调查时间 | 部分成立：仅适用于 AI 用户，“加速”不成立 |",
-    "| ② 信任不足 | 维度一 调查对象 | 部分成立：仅适用于 AI 用户 |",
-    "| ③ 检索难致退订 | 维度二 研究总体；维度四 研究方法 | 证据不足：六国口径混用，因果未证 |",
-    "| ④ 接入可信数据 | 维度四 研究方法 | 未经检验 |",
+    "| ① 依赖 AI | 调查对象；调查时间 | 部分成立：只适用于 AI 用户，“加速”说不通 |",
+    "| ② 信任不足 | 调查对象 | 部分成立：只适用于 AI 用户 |",
+    "| ③ 难找致退订 | 研究总体；研究方法 | 证据不足：混用六国数据，只见相关不见因果 |",
+    "| ④ 接入可靠数据 | 研究方法 | 未经检验 |",
     "",
-    "**讲法：** 每页先说出标题这句结论，再用页面上的图或数字作证据；页面只放要点，细节由口头补充。",
+    "**讲法：** 每页先把标题那句话说出来，再指着图或数字解释；页面只放要点，细节留给口头。",
     "",
     "## 时间分配",
     "",
@@ -449,21 +449,21 @@ async function icon(Comp, hex, size = 256) {
     "|---|---|---|---|",
     ...SCRIPT.map((x, i) => { acc += x.secs; return `| ${i + 1} | ${x.title} | ${x.secs} 秒 | ${mmss(acc)} |`; }),
     "",
-    "如需压缩时间：第 3 页可略去最后一句；第 8 页可略去 Durex 案例一句。",
+    "如需压缩时间：第 3 页可略去最后一句；第 8 页可略去最后一句。",
     "",
     "## 逐页讲稿",
     "",
     ...SCRIPT.flatMap((x, i) => [`### 第 ${i + 1} 页｜${x.title}（约 ${x.secs} 秒，${x.chars} 字）`, "", x.text, ""]),
     "## 可能的提问与回答要点",
     "",
-    "**问：既然样本不代表美国人群，这份报告是否就没有价值？**  ",
-    "答：报告对“AI 聊天机器人用户”这一群体的描述仍有参考价值，其趋势判断与皮尤研究中心等独立来源方向一致。问题在于引用时应限定口径，不宜推论到全体美国人。",
+    "**问：既然样本代表不了美国人，这份报告还有用吗？**  ",
+    "答：有用。它对 AI 用户的描述是可以参考的，而且和皮尤等独立调查的方向一致。我只是觉得，引用时得说清楚这是 AI 用户的情况，不能直接换成“美国人”。",
     "",
-    "**问：六国均值的问题，是否只是表述不严谨？**  ",
-    "答：可能如此，汇报中并未认为数据造假。但读者会据此认为美国观众平均需要 14 分钟，而原始数据中美国为 12 分钟。这正是“研究总体”维度需要关注的问题。",
+    "**问：六国平均那一处，会不会只是写得不够严谨？**  ",
+    "答：很可能是。我没有说数据造假。但读者看那张图，会以为美国人平均要找 14 分钟，而原始数据里美国是 12 分钟。数字没错，放的位置让它说了别的话。",
     "",
-    "**问：数据来源是如何核查的？**  ",
-    "答：对照了报告原文、Gracenote 2025 年报告原文，以及皮尤研究中心、德勤、普华永道、南加州大学论文等原始材料，对 11 个数据来源逐一标注了方法公开程度（见附录一、附录二）。",
+    "**问：这些来源你是怎么核对的？**  ",
+    "答：对照了报告原文、Gracenote 前一年的报告，以及皮尤、德勤、普华永道和南加州大学论文的原文，11 个来源逐一看了它们公开了哪些方法信息（见附录）。",
     "",
   ].join("\n");
   fs.writeFileSync(SCRIPT_MD, md);
