@@ -51,13 +51,12 @@ async function icon(Comp, hex, size = 256) {
   };
 
   // ---------- 版式 ----------
-  const FOOT = "Gracenote《TV Search and Discovery in the AI Era》解读 ｜ 市场调研：方法与实践";
   pres.defineSlideMaster({
     title: "TITLE_DARK",
     background: { color: C.text2 },
     objects: [
       { placeholder: { options: { name: "title", type: "title", x: 0.8, y: 1.7, w: 7.2, h: 2.3, fontSize: 44, bold: true, color: C.background1, valign: "bottom", align: "left", margin: 0 }, text: "" } },
-      { placeholder: { options: { name: "body", type: "body", x: 0.8, y: 4.25, w: 7.2, h: 1.1, fontSize: 18, color: C.accent6, valign: "top", align: "left", margin: 0 }, text: "" } },
+      { placeholder: { options: { name: "body", type: "body", x: 0.8, y: 4.25, w: 7.2, h: 1.5, fontSize: 18, color: C.accent6, valign: "top", align: "left", margin: 0 }, text: "" } },
     ],
   });
   pres.defineSlideMaster({
@@ -65,7 +64,6 @@ async function icon(Comp, hex, size = 256) {
     background: { color: C.text2 },
     objects: [
       { placeholder: { options: { name: "title", type: "title", x: 0.8, y: 0.55, w: 11.7, h: 0.95, fontSize: 32, bold: true, color: C.background1, valign: "middle", align: "left", margin: 0 }, text: "" } },
-      { text: { text: FOOT, options: { x: 0.8, y: 6.95, w: 9, h: 0.3, fontSize: 10, color: C.accent6, margin: 0 } } },
     ],
     slideNumber: { x: 12.0, y: 6.95, w: 0.6, h: 0.3, fontSize: 10, color: C.accent6, align: "right" },
   });
@@ -74,7 +72,6 @@ async function icon(Comp, hex, size = 256) {
     background: { color: C.background1 },
     objects: [
       { placeholder: { options: { name: "title", type: "title", x: 0.6, y: 0.4, w: 8.2, h: 0.85, fontSize: 30, bold: true, color: C.text2, valign: "middle", align: "left", margin: 0 }, text: "" } },
-      { text: { text: FOOT, options: { x: 0.6, y: 6.95, w: 9, h: 0.3, fontSize: 10, color: C.accent5, margin: 0 } } },
     ],
     slideNumber: { x: 12.1, y: 6.95, w: 0.6, h: 0.3, fontSize: 10, color: C.accent5, align: "right" },
   });
@@ -106,7 +103,7 @@ async function icon(Comp, hex, size = 256) {
   let s = pres.addSlide({ masterName: "TITLE_DARK", sectionTitle: "开场" });
   text(s, "市场调研：方法与实践 ｜ 课后作业分享", { x: 0.8, y: 1.05, w: 7.2, h: 0.4, fontSize: 14, color: C.accent6, objectName: "课程名" });
   s.addText("54% 的 13–14 岁\n每天都用 AI？", { placeholder: "title" });
-  s.addText("解读 Gracenote（尼尔森旗下）2026 年报告\n《TV Search and Discovery in the AI Era》", { placeholder: "body" });
+  s.addText("解读尼尔森旗下 Gracenote 2026 年的行业报告\n《TV Search and Discovery in the AI Era》\n主题：AI 时代，人们怎样找电视节目", { placeholder: "body" });
   text(s, "54%", { x: 8.5, y: 1.55, w: 4.3, h: 2.2, fontSize: 120, bold: true, fontFace: "Arial", color: C.accent4, align: "center", valign: "middle", objectName: "封面数字" });
   text(s, "报告：13–14 岁受访者每天用 AI 的比例", { x: 8.3, y: 3.75, w: 4.7, h: 0.45, fontSize: 13, color: C.accent6, align: "center", objectName: "封面数字说明" });
   s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 8.75, y: 4.6, w: 3.8, h: 0.8, rectRadius: 0.4, fill: { color: C.background1 }, line: { color: C.background1 }, objectName: "搜索框" });
@@ -118,38 +115,42 @@ async function icon(Comp, hex, size = 256) {
   pres.addSection({ title: "报告介绍" });
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
   s.addText("这份报告在问什么", { placeholder: "title" });
+  text(s, [
+    { text: "背景：", options: { bold: true, color: C.accent1 } },
+    { text: "流媒体平台越来越多，想看一部剧常常不知道去哪找；不少人开始直接问 ChatGPT 这类 AI 聊天机器人。", options: { color: C.text1 } },
+  ], { x: 0.6, y: 1.35, w: 12.1, h: 0.5, fontSize: 16, valign: "middle", objectName: "背景" });
   [
     [ic.msg, "使用", "人们，尤其是年轻人，怎样用 AI 聊天机器人找信息？"],
     [ic.searchLt, "痛点", "流媒体平台越来越多，找节目有多难？会不会因此退订？"],
     [ic.shield, "信任", "观众相信 AI 给出的娱乐和体育信息吗？"],
   ].forEach(([img, k, v], i) => {
     const x = 0.6 + i * 4.1;
-    card(s, x, 1.5, 3.8, 2.2, C.background2, `问题卡${i + 1}`);
-    iconDot(s, img, x + 0.3, 1.8, 0.7, C.accent1);
-    text(s, `问题 ${i + 1} · ${k}`, { x: x + 1.15, y: 1.8, w: 2.5, h: 0.7, fontSize: 18, bold: true, color: C.text2, valign: "middle", objectName: `问题标题${i + 1}` });
-    text(s, v, { x: x + 0.3, y: 2.65, w: 3.2, h: 0.95, fontSize: 15, color: C.text1, valign: "top", objectName: `问题内容${i + 1}` });
+    card(s, x, 2.05, 3.8, 1.95, C.background2, `问题卡${i + 1}`);
+    iconDot(s, img, x + 0.3, 2.25, 0.65, C.accent1);
+    text(s, `问题 ${i + 1} · ${k}`, { x: x + 1.1, y: 2.25, w: 2.5, h: 0.65, fontSize: 18, bold: true, color: C.text2, valign: "middle", objectName: `问题标题${i + 1}` });
+    text(s, v, { x: x + 0.3, y: 3.0, w: 3.2, h: 0.85, fontSize: 15, color: C.text1, valign: "top", objectName: `问题内容${i + 1}` });
   });
-  card(s, 0.6, 4.0, 12.1, 2.3, C.text2, "机构与主张");
-  iconDot(s, ic.database, 0.95, 4.45, 0.6, C.accent1);
+  card(s, 0.6, 4.25, 12.1, 2.1, C.text2, "机构与主张");
+  iconDot(s, ic.database, 0.95, 4.6, 0.6, C.accent1);
   text(s, [
     { text: "谁做的", options: { fontSize: 16, bold: true, color: C.accent6, breakLine: true } },
-    { text: "Gracenote，尼尔森旗下的内容数据业务，向媒体公司出售节目元数据：片名、简介、在哪个平台播出。", options: { fontSize: 15, color: C.background1 } },
-  ], { x: 1.75, y: 4.25, w: 4.6, h: 1.8, valign: "middle", paraSpaceAfter: 6, objectName: "机构说明" });
-  iconDot(s, ic.flag, 6.85, 4.45, 0.6, C.accent3);
+    { text: "Gracenote，属于尼尔森（全球最大的收视率调查公司），专门给电视和流媒体平台提供节目资料：片名、简介、在哪能看。", options: { fontSize: 15, color: C.background1 } },
+  ], { x: 1.75, y: 4.4, w: 4.7, h: 1.8, valign: "middle", paraSpaceAfter: 6, objectName: "机构说明" });
+  iconDot(s, ic.flag, 6.85, 4.6, 0.6, C.accent3);
   text(s, [
     { text: "报告主张", options: { fontSize: 16, bold: true, color: C.accent6, breakLine: true } },
-    { text: "AI 会成为找节目的入口，但必须接入可信的行业数据——这正是 Gracenote 卖的东西。", options: { fontSize: 15, color: C.background1 } },
-  ], { x: 7.65, y: 4.25, w: 4.8, h: 1.8, valign: "middle", paraSpaceAfter: 6, objectName: "报告主张" });
+    { text: "AI 会成为人们找节目的入口，但必须接入可信的行业数据——这正是 Gracenote 卖的东西。", options: { fontSize: 15, color: C.background1 } },
+  ], { x: 7.65, y: 4.4, w: 4.8, h: 1.8, valign: "middle", paraSpaceAfter: 6, objectName: "报告主张" });
   notes(s);
 
   // ======================= 3 研究方法 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
   s.addText("研究方法：两份核心问卷", { placeholder: "title" });
   const surveys = [
-    ["2026 生成式 AI 使用调查", "支撑所有 AI 相关结论", [
+    ["调查一：2026 年 AI 使用调查", "报告里所有关于 AI 的数字都来自这里", [
       ["调查对象", "美国 13–79 岁 AI 聊天机器人用户"], ["调查时间", "2026.1.23–2.4"], ["调查方式", "线上问卷"],
       ["样本量", "4,003"], ["抽样方式", "未披露：样本来源、加权、回应率"]]],
-    ["2025 流媒体消费者调查", "支撑“找节目难”“会退订”等结论", [
+    ["调查二：2025 年六国流媒体调查", "“找节目难”“会退订”等数字来自这里", [
       ["调查对象", "巴西、法、德、墨、美、英的流媒体用户"], ["调查时间", "2025.7.28–8.1"], ["调查方式", "线上问卷"],
       ["样本量", "3,000（每国 500）"], ["抽样方式", "未披露：样本来源、加权、回应率"]]],
   ];
@@ -167,18 +168,18 @@ async function icon(Comp, hex, size = 256) {
       text(s, v, { x: x + 1.65, y, w: 4.1, h: 0.5, fontSize: 15, bold: gap, color: gap ? C.accent3 : C.text1, valign: "middle", objectName: `方法值${i + 1}-${j + 1}` });
     });
   });
-  text(s, "另外还用了尼尔森收视测量、Gracenote 节目数据库，以及 Pew、Deloitte、PwC 等外部研究，共 11 个来源（核查见附录一）。", { x: 0.6, y: 6.05, w: 12.1, h: 0.4, fontSize: 14, color: C.text1, objectName: "其他来源" });
-  src(s, "来源：报告第 23 页；Nielsen 新闻稿（2026.4）；Gracenote 2025《State of Play》第 20 页。", 6.5);
+  text(s, "此外还引用了尼尔森收视率数据、Gracenote 节目资料库，以及皮尤、德勤、普华永道等机构的研究，共 11 个来源（核查见附录一）。", { x: 0.6, y: 6.05, w: 12.1, h: 0.4, fontSize: 14, color: C.text1, objectName: "其他来源" });
+  src(s, "来源：报告的数据说明；尼尔森新闻稿（2026.4）；Gracenote 2025 年报告《State of Play》的数据说明。", 6.5);
   notes(s);
 
   // ======================= 4 主要结论 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
   s.addText("报告的主要结论", { placeholder: "title" });
   [
-    ["54%", "13–14 岁 AI 用户每天使用 AI 聊天机器人", "2026 AI 调查", C.accent1],
-    ["75%", "受访者会核查 AI 给出的答案", "2026 AI 调查", C.accent1],
-    ["14 分钟", "平均找一个想看的节目所花时间", "2025 六国调查", C.accent2],
-    ["54%", "18–34 岁：找不到想看的，可能会退订", "2025 六国调查", C.accent2],
+    ["54%", "13–14 岁 AI 用户每天都用（报告称为“Alpha 世代”）", "调查一", C.accent1],
+    ["75%", "受访者会核查 AI 给出的答案", "调查一", C.accent1],
+    ["14 分钟", "平均找一个想看的节目所花时间", "调查二（六国）", C.accent2],
+    ["54%", "18–34 岁：找不到想看的，可能会退订", "调查二（六国）", C.accent2],
   ].forEach(([num, d, from, col], i) => {
     const x = 0.6 + i * 3.075;
     card(s, x, 1.5, 2.85, 2.85, C.background2, `结论卡${i + 1}`);
@@ -194,7 +195,7 @@ async function icon(Comp, hex, size = 256) {
     text(s, t, { x, y: 5.15, w: 2.7, h: 0.8, fontSize: 14, bold: last, color: last ? C.background1 : C.text2, align: "center", valign: "middle", objectName: `链文字${i + 1}` });
     if (!last) text(s, "→", { x: x + 2.7, y: 5.15, w: 0.43, h: 0.8, fontSize: 20, bold: true, color: C.accent5, align: "center", valign: "middle", objectName: `箭头${i + 1}` });
   });
-  src(s, "来源：报告第 2、5、9、14、18 页。", 6.5);
+  src(s, "来源：Gracenote 报告正文与图表。", 6.5);
   notes(s);
 
   // ======================= 5 评价框架 =======================
@@ -237,8 +238,8 @@ async function icon(Comp, hex, size = 256) {
     { text: "4,003", options: { fontSize: 22, bold: true, fontFace: "Arial", color: C.background1 } },
   ], { x: 2.0, y: 3.9, w: 2.0, h: 1.2, align: "center", valign: "middle", objectName: "受访者标签" });
   [
-    ["报告的写法", C.accent2, "调查对象是“互联网和 AI 聊天机器人用户”，正文却常写成 “Americans”“U.S. consumers”。"],
-    ["“Alpha 世代”", C.accent1, "定义是 2010–2024 年出生，样本里只有 13–14 岁这两岁。"],
+    ["报告的写法", C.accent2, "调查的是“用 AI 聊天机器人的人”，正文却常把结论写成“美国人”如何如何。"],
+    ["“Alpha 世代”", C.accent1, "报告把 13–14 岁受访者叫作 Alpha 世代；这个世代其实指 2010–2024 年出生的所有人。"],
     ["没有公开", C.accent3, "样本来源、是否概率抽样、加权、回应率、各年龄组人数。"],
   ].forEach(([k, col, v], i) => {
     const y = 1.55 + i * 1.3;
@@ -249,7 +250,7 @@ async function icon(Comp, hex, size = 256) {
   });
   card(s, 6.0, 5.55, 6.7, 0.8, C.background2, "Durex卡");
   text(s, "和课上 Durex 网络调查是同一个问题：网络样本能否代表总体？", { x: 6.25, y: 5.55, w: 6.3, h: 0.8, fontSize: 15, bold: true, color: C.text2, valign: "middle", objectName: "Durex联系" });
-  src(s, "来源：报告第 2、5、6、20、23 页；Nielsen 新闻稿（“Gen Alpha findings are based on respondents ages 13 and 14”）。");
+  src(s, "来源：Gracenote 报告；尼尔森新闻稿原文：“Gen Alpha findings are based on respondents ages 13 and 14”。");
   notes(s);
 
   // ======================= 7 总体 =======================
@@ -259,33 +260,33 @@ async function icon(Comp, hex, size = 256) {
   s.addChart(pres.charts.BAR, [{ name: "找节目时间", labels: ["巴西", "法国", "德国", "墨西哥", "英国", "美国", "六国平均"], values: [12, 26, 11, 11, 12, 12, 14] }], {
     x: 0.6, y: 1.45, w: 5.6, h: 4.95, barDir: "bar", catAxisOrientation: "maxMin",
     chartColors: [MUTED_BAR, MUTED_BAR, MUTED_BAR, MUTED_BAR, MUTED_BAR, H.accent1, H.accent3],
-    showTitle: true, title: "找到想看的节目要几分钟（2025 调查原文）", titleFontSize: 14, titleColor: H.dk2, titleFontFace: "+mn-lt",
+    showTitle: true, title: "找到想看的节目要几分钟（六国调查的原始报告）", titleFontSize: 14, titleColor: H.dk2, titleFontFace: "+mn-lt",
     showValue: true, dataLabelPosition: "outEnd", dataLabelFormatCode: '0" 分钟"', dataLabelFontSize: 12, dataLabelColor: H.dk1, dataLabelFontFace: "+mn-lt",
     catAxisLabelFontSize: 13, catAxisLabelColor: H.dk1, catAxisLabelFontFace: "+mn-lt",
     valAxisHidden: true, valAxisMinVal: 0, valAxisMaxVal: 32, valGridLine: { style: "none" }, catGridLine: { style: "none" },
     catAxisLineShow: false, showLegend: false, barGapWidthPct: 45, objectName: "分国家找节目时间图",
   });
   [
-    ["14 分钟", "六国简单平均：美国自己 12 分钟，法国 26 分钟拉高了平均。报告却把它和美国尼尔森收视数据画在同一张图里。"],
-    ["54%", "“18–34 岁可能退订”与六国数据吻合；“50% 的美国观众会考虑取消”，原文只找到六国 49%。"],
-    ["32%", "与六国平均一致；第 12 页同一题写成“34% 的美国人”。"],
+    ["14 分钟", "来自 Gracenote 去年的六国调查：美国 12 分钟，14 分钟是六国平均。这份报告却把它放进讲美国人看电视的图里。"],
+    ["54%", "“18–34 岁可能退订”也是六国数字；报告另说“50% 的美国观众会考虑退订”，原始报告里只有六国的 49%。"],
+    ["32%", "同一道题，报告一处写 32%（六国平均），另一处写成“34% 的美国人”。"],
   ].forEach(([k, v], i) => {
     const y = 1.5 + i * 1.65;
     card(s, 6.6, y, 6.1, 1.45, C.background2, `口径卡${i + 1}`);
     text(s, k, { x: 6.85, y, w: 1.5, h: 1.45, fontSize: 22, bold: true, color: C.accent3, valign: "middle", objectName: `口径数字${i + 1}` });
     text(s, v, { x: 8.4, y: y + 0.08, w: 4.15, h: 1.3, fontSize: 14, color: C.text1, valign: "middle", objectName: `口径说明${i + 1}` });
   });
-  src(s, "来源：报告第 2、6、9、12 页；Gracenote 2025《State of Play》分国家、分年龄图表（每国 500 人）。", 6.55);
+  src(s, "来源：Gracenote 报告；Gracenote 2025 年报告《State of Play》分国家、分年龄图表（每国 500 人）。", 6.55);
   notes(s);
 
   // ======================= 8 时间与分母 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "评价" });
   s.addText("时间：24% 到 54% 不是“增长”", { placeholder: "title" });
   tracker(s, 2);
-  text(s, "报告原话：Pew 2025 年秋发现 30% 的青少年每天用聊天机器人，“仅仅几个月后”Gracenote 调查显示超过一半，说明使用频率“在加速”。", { x: 0.6, y: 1.4, w: 12.1, h: 0.65, fontSize: 15, italic: true, color: C.text2, objectName: "报告原话" });
+  text(s, "报告原话：皮尤研究中心 2025 年秋发现 30% 的青少年每天用 AI 聊天机器人，“仅仅几个月后”我们的调查显示超过一半，说明使用频率“在加速”。", { x: 0.6, y: 1.4, w: 12.1, h: 0.65, fontSize: 15, italic: true, color: C.text2, objectName: "报告原话" });
   [
-    [0.6, "Pew 研究中心", "24%", C.accent5, ["分母：全体 13–14 岁青少年，用不用 AI 都算", "概率样本，加权；2025.9–10"]],
-    [7.23, "Gracenote", "54%", C.accent1, ["分母：13–14 岁的 AI 聊天机器人用户", "线上样本，未公开加权；2026.1–2"]],
+    [0.6, "皮尤研究中心（Pew，美国权威民调机构）", "24%", C.accent5, ["分母：全体 13–14 岁青少年，用不用 AI 都算", "概率样本，加权；2025.9–10"]],
+    [7.23, "Gracenote（本报告）", "54%", C.accent1, ["分母：13–14 岁的 AI 聊天机器人用户", "线上样本，未公开加权；2026.1–2"]],
   ].forEach(([x, who, num, col, meta], i) => {
     card(s, x, 2.25, 5.5, 2.65, C.background2, `对比卡${i + 1}`);
     text(s, who, { x: x + 0.3, y: 2.4, w: 4.9, h: 0.45, fontSize: 16, bold: true, color: col, objectName: `对比机构${i + 1}` });
@@ -298,21 +299,21 @@ async function icon(Comp, hex, size = 256) {
   text(s, "≠", { x: 6.1, y: 2.25, w: 1.13, h: 2.65, fontSize: 48, bold: true, color: C.accent3, align: "center", valign: "middle", objectName: "不等号" });
   card(s, 0.6, 5.15, 12.1, 1.2, C.text2, "同分母条");
   text(s, [
-    { text: "换成同一分母（只看使用者）：", options: { bold: true, color: C.accent6 } },
-    { text: "Pew 44% 对 Gracenote 54%，只差约 10 个百分点。剩下的差距还可能来自年龄、方法、时间不同，不能说明“加速”。", options: { color: C.background1 } },
+    { text: "如果都只看用 AI 的人：", options: { bold: true, color: C.accent6 } },
+    { text: "皮尤 44% 对 Gracenote 54%，只差约 10 个百分点。剩下的差距还可能来自年龄、方法、时间不同，不能说明“加速”。", options: { color: C.background1 } },
   ], { x: 0.9, y: 5.15, w: 11.5, h: 1.2, fontSize: 15, valign: "middle", objectName: "同分母结论" });
-  src(s, "来源：报告第 14 页；Pew《Teens, Social Media and AI Chatbots 2025》数据表（全体每天 28%，13–14 岁 24%，使用者 44%）。", 6.5);
+  src(s, "来源：Gracenote 报告；皮尤《Teens, Social Media and AI Chatbots 2025》数据表（全体每天 28%，13–14 岁 24%，使用者中 44%）。", 6.5);
   notes(s);
 
   // ======================= 9 方法 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "评价" });
-  s.addText("方法：四种数据串成一条因果链", { placeholder: "title" });
+  s.addText("方法：四种数据拼成一条因果链", { placeholder: "title" });
   tracker(s, 3);
   [
-    ["意向 · 问卷", C.accent1, "54%", "18–34 岁“可能会退订”", "六国口径"],
-    ["行为 · 行业指标", C.accent2, "5.5%", "主要平台月流失率", "定义未公开；另一机构测得 2019 年已是 4.1%"],
-    ["预测 · 模型", C.text2, "3,185 亿美元", "OTT + 付费电视 2029 年支出", "PwC 的全球数字，不是美国"],
-    ["测试 · 机器", C.accent5, "约 2/3", "聊天机器人找对播出平台", "6 国合并：美英德约 80%，法意西不到 30%"],
+    ["意向 · 问卷", C.accent1, "54%", "18–34 岁说“可能会退订”", "六国数字"],
+    ["行为 · 行业统计", C.accent2, "5.5%", "流媒体平台每月退订率", "算法未公开；另一机构测得 2019 年已是 4.1%"],
+    ["预测 · 普华永道", C.text2, "3,185 亿美元", "网络视频与付费电视 2029 年总支出", "全球数字，不是美国"],
+    ["测试 · 让 AI 答题", C.accent5, "约 2/3", "AI 答对了剧在哪个平台能看", "6 国合并：美英德约 80%，法意西不到 30%"],
   ].forEach(([k, col, num, d, cav], i) => {
     const x = 0.6 + i * 3.12;
     card(s, x, 1.5, 2.75, 2.75, C.background2, `数据卡${i + 1}`);
@@ -325,8 +326,8 @@ async function icon(Comp, hex, size = 256) {
     if (i < 3) text(s, "→", { x: x + 2.75, y: 1.5, w: 0.37, h: 2.75, fontSize: 20, bold: true, color: C.accent5, align: "center", valign: "middle", objectName: `箭头${i + 1}` });
   });
   [
-    [0.6, "因果链没有被证明", "没有追踪同一批人，也没有做实验，证明不了“找不到 → 退订”；“接入 MCP 信息就不会过时”也没有检验。"],
-    [6.75, "有些引用被放大了", "USC 的 38%：只是一个知识库、一个自动指标（与人工判断一致率 60.9%）。Deloitte 的 41%：分母是全体消费者，报告写成“订户”。"],
+    [0.6, "因果链没有被证明", "四种数据对象不同、性质不同，也没追踪同一批人或做实验，证明不了“找不到 → 退订”；报告提出的办法（让 AI 接入行业数据库）也没有检验效果。"],
+    [6.75, "有些引用被放大了", "南加州大学研究的“38% 数据有偏差”，只是一个知识库、一个自动打分指标的结果；德勤的“41% 觉得不值”指全体消费者，报告写成了“订户”。"],
   ].forEach(([x, k, v], i) => {
     card(s, x, 4.5, 5.95, 1.85, C.background2, `方法结论卡${i + 1}`);
     text(s, [
@@ -334,7 +335,7 @@ async function icon(Comp, hex, size = 256) {
       { text: v, options: { fontSize: 14, color: C.text1 } },
     ], { x: x + 0.3, y: 4.6, w: 5.4, h: 1.65, valign: "middle", paraSpaceAfter: 4, objectName: `方法结论${i + 1}` });
   });
-  src(s, "来源：报告第 5、6、9、22 页；PwC、Veed（作者原文与 NAB 2026）、USC 论文（EMNLP 2021）、Deloitte 方法说明；Antenna 数据经 MediaPost 转述。", 6.5);
+  src(s, "来源：Gracenote 报告；普华永道（PwC）、Veed Analytics 测试、南加州大学论文（EMNLP 2021）、德勤（Deloitte）原文；Antenna 数据经 MediaPost 转述。", 6.5);
   notes(s);
 
   // ======================= 10 我的评价 =======================
@@ -343,14 +344,14 @@ async function icon(Comp, hex, size = 256) {
   s.addText("我的评价", { placeholder: "title" });
   card(s, 0.8, 1.65, 3.75, 4.6, C.accent1, "优点卡");
   text(s, "做得好的", { x: 1.1, y: 1.85, w: 3.2, h: 0.5, fontSize: 18, bold: true, color: C.accent6, objectName: "优点标题" });
-  ["公开了样本量、时间、年龄和筛选条件", "每张图都有读法说明和来源", "图中数字可复算：CTV 占 54%、授权剧多 81%，都对得上"].forEach((t, i) => {
+  ["公开了样本量、时间、年龄和筛选条件", "每张图都有读法说明和来源", "我用图里的原始数字复算了几处，都对得上"].forEach((t, i) => {
     const y = 2.5 + i * 1.2;
     iconDot(s, ic.check, 1.1, y + 0.05, 0.5, C.accent2);
     text(s, t, { x: 1.75, y, w: 2.6, h: 1.0, fontSize: 14, color: C.background1, valign: "top", objectName: `优点${i + 1}` });
   });
   [
-    [1.65, C.accent2, "可以当作", "行业方向的信号：年轻人在用 AI 找内容，但并不信任它。"],
-    [4.0, C.accent3, "不宜当作", "对“美国人”的精确估计，或“找不到 → 退订”的因果证据。"],
+    [1.65, C.accent2, "可以当作", "行业趋势的信号：年轻人在用 AI 找节目，但并不信任它。"],
+    [4.0, C.accent3, "不宜当作", "对“美国人”的精确数据，或“找不到 → 退订”的因果证据。"],
   ].forEach(([y, fill, k, v], i) => {
     card(s, 4.8, y, 3.9, 2.25, fill, `判断卡${i + 1}`);
     text(s, [
@@ -364,7 +365,7 @@ async function icon(Comp, hex, size = 256) {
     { text: "如果要验证“找不到节目会导致退订”，你会怎么设计调查？", options: { fontSize: 19, bold: true, color: C.text1, breakLine: true } },
     { text: "提示：追踪同一批人，既问“会不会退订”，也记录后来是否真的退订。", options: { fontSize: 13, color: C.accent5 } },
   ], { x: 9.25, y: 1.85, w: 3.05, h: 4.2, valign: "middle", paraSpaceAfter: 16, objectName: "讨论问题" });
-  text(s, "提醒：报告主张“需要可信的行业数据”正是 Gracenote 的业务。这是细看方法的理由，但不能据此断定数据有误。", { x: 0.8, y: 6.35, w: 11.75, h: 0.4, fontSize: 12, color: C.accent6, objectName: "利益说明" });
+  text(s, "提醒：报告的主张（AI 要接入可信的行业数据）正是 Gracenote 的业务。这是要细看方法的理由，但不能据此断定数据有误。", { x: 0.8, y: 6.35, w: 11.75, h: 0.4, fontSize: 12, color: C.accent6, objectName: "利益说明" });
   notes(s);
 
   // ======================= 附录一 =======================
@@ -451,7 +452,7 @@ async function icon(Comp, hex, size = 256) {
     "|---|---|---|---|",
     ...SCRIPT.map((x, i) => { acc += x.secs; return `| ${i + 1} | ${x.title} | ${x.secs} 秒 | ${mmss(acc)} |`; }),
     "",
-    "超时的话：第 2 页可以只讲“三个问题 + 报告主张”；第 9 页可以略过 USC 那一句。",
+    "超时的话：第 2 页的背景可以压缩成一句；第 6 页可以略过 Durex 那一句。",
     "",
     "## 逐页讲稿",
     "",
@@ -459,7 +460,7 @@ async function icon(Comp, hex, size = 256) {
     "## 可能被问到的问题",
     "",
     "**问：你说样本不代表美国人，那这份报告是不是没用？**  ",
-    "答：不是没用。它对“AI 用户”这个群体的描述有参考价值，方向也和 Pew、Reelgood 等独立来源一致。我的意思是引用时要带上口径，不能说成“美国人”。",
+    "答：不是没用。它对“AI 用户”这个群体的描述有参考价值，方向也和皮尤研究中心等独立来源一致。我的意思是引用时要带上口径，不能说成“美国人”。",
     "",
     "**问：六国平均的问题，会不会只是报告写得不严谨？**  ",
     "答：有可能，我也没有说数据造假。但读者看那张图，会以为美国观众要花 14 分钟，而美国自己的数字是 12 分钟。这正是课上说的：要看清研究总体。",
