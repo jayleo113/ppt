@@ -166,7 +166,7 @@ function timingXml(xml, groups) {
   // ======================= 汇报框架 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "开场" });
   head(s, "汇报框架", "报告结论的适用范围小于其表述");
-  ["研究背景与问题", "研究设计", "报告内容", "方法评价", "结论"].forEach((t, i) => {
+  ["研究背景与问题", "研究方法", "研究结论", "思考与评价", "总体判断"].forEach((t, i) => {
     const y = 1.8 + i * 0.9, focus = i === 3;
     rule(s, 0.6, y, 6.0);
     text(s, `0${i + 1}`, { x: 0.6, y, w: 0.9, h: 0.9, fontSize: 20, bold: true, fontFace: "Arial", color: focus ? C.accent3 : C.accent5, valign: "middle", objectName: `序号${i + 1}` });
@@ -203,7 +203,7 @@ function timingXml(xml, groups) {
 
   // ======================= 02 研究设计 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  head(s, "02  研究设计", "数据来源：两项线上问卷");
+  head(s, "02  研究方法", "研究方法：两项线上问卷");
   const th = (t) => ({ text: t, options: { bold: true, color: C.background1, fill: { color: C.text2 }, fontSize: 18 } });
   const tl = (t) => ({ text: t, options: { bold: true, color: C.accent5 } });
   s.addTable([
@@ -211,21 +211,22 @@ function timingXml(xml, groups) {
     [tl("调查对象"), "美国 13–79 岁 AI 聊天机器人用户", "六国流媒体用户"],
     [tl("调查时间"), "2026 年 1–2 月", "2025 年 7–8 月"],
     [tl("调查方式"), "线上问卷", "线上问卷"],
+    [tl("抽样方式"), { text: "报告未说明", options: { bold: true, color: C.accent3 } }, { text: "报告未说明", options: { bold: true, color: C.accent3 } }],
     [tl("样本量"), "4,003 人", "3,000 人（每国 500）"],
   ], {
     x: 0.6, y: 1.75, w: 12.1, colW: [2.0, 5.05, 5.05], fontSize: 20, color: C.text1, valign: "middle",
     margin: [6, 14, 6, 14], border: [{ type: "none" }, { type: "none" }, { pt: 0.75, color: RULE }, { type: "none" }],
-    rowH: [0.8, 0.85, 0.85, 0.85, 0.85], fill: { color: C.background1 }, objectName: "研究设计表",
+    rowH: [0.75, 0.72, 0.72, 0.72, 0.72, 0.72], fill: { color: C.background1 }, objectName: "研究设计表",
   });
   text(s, [
     { text: "注：", options: { bold: true, color: C.accent3 } },
-    { text: "两项调查均未说明抽样方法；另引用 11 个外部来源（见附录）。", options: { color: C.text1 } },
-  ], { x: 0.6, y: 6.0, w: 12.1, h: 0.5, fontSize: 18, valign: "middle", objectName: "说明" });
+    { text: "报告另引用 11 个外部来源，其方法披露情况见附录一。", options: { color: C.text1 } },
+  ], { x: 0.6, y: 6.15, w: 12.1, h: 0.45, fontSize: 18, valign: "middle", objectName: "说明" });
   notes(s);
 
   // ======================= 03 发现一 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  head(s, "03  报告内容", "发现一：AI 使用普遍，信任有限");
+  head(s, "03  研究结论", "结论一：AI 使用普遍，信任有限");
   [
     [0.6, "54%", "13–14 岁 AI 用户\n每日使用"],
     [6.75, "75%", "受访者\n核对 AI 回答"],
@@ -247,7 +248,7 @@ function timingXml(xml, groups) {
 
   // ======================= 03 发现二 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  head(s, "03  报告内容", "发现二：检索困难与退订风险");
+  head(s, "03  研究结论", "结论二：检索困难与退订风险");
   [
     ["内容分散", "54%", "联网电视占美国\n电视时长"],
     ["检索耗时", "14 分钟", "平均检索时长"],
@@ -267,7 +268,7 @@ function timingXml(xml, groups) {
   // ======================= 04 评价思路 =======================
   pres.addSection({ title: "方法评价" });
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  head(s, "04  方法评价", "评价：逐项检验四个推论环节");
+  head(s, "04  思考与评价", "评价：逐项检验四个推论环节");
   [
     ["① 依赖 AI", "调查对象\n调查时间"],
     ["② 信任不足", "调查对象"],
@@ -288,7 +289,7 @@ function timingXml(xml, groups) {
 
   // ======================= 调查对象 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  head(s, "04  方法评价", "调查对象：样本仅为 AI 用户");
+  head(s, "04  思考与评价", "调查对象：样本仅为 AI 用户");
   [
     [1.0, 1.7, 4.7, C.background2, "美国人口"],
     [1.45, 2.4, 3.8, C.accent6, "互联网用户"],
@@ -312,7 +313,7 @@ function timingXml(xml, groups) {
 
   // ======================= 调查范围 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  head(s, "04  方法评价", "调查范围：“14 分钟”为六国均值");
+  head(s, "04  思考与评价", "调查范围：“14 分钟”为六国均值");
   framedImage(s, "daily_tv_usage_marked.jpg", 0.6, 1.8, 6.0, 3.49, "原图");
   text(s, "报告原图：橙框为六国均值，与尼尔森美国收视数据并列", { x: 0.6, y: 5.4, w: 6.0, h: 0.35, fontSize: 13, color: C.accent5, objectName: "原图说明" });
   text(s, [
@@ -330,7 +331,7 @@ function timingXml(xml, groups) {
 
   // ======================= 调查时间 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  head(s, "04  方法评价", "调查时间：比较基准不一致");
+  head(s, "04  思考与评价", "调查时间：比较基准不一致");
   [
     [1.8, "皮尤研究中心 · 2025 年秋", "24%", "全体 13–14 岁青少年", C.accent5],
     [4.15, "本报告 · 2026 年初", "54%", "13–14 岁 AI 用户", C.accent1],
@@ -353,7 +354,7 @@ function timingXml(xml, groups) {
 
   // ======================= 研究方法 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  head(s, "04  方法评价", "研究方法：因果关系未经检验");
+  head(s, "04  思考与评价", "研究方法：因果关系未经检验");
   [["意向 · 问卷", "54%"], ["行为 · 退订率", "5.5%"], ["预测 · 普华永道", "3,185 亿美元"], ["测试 · AI 答题", "约 2/3"]].forEach(([k, num], i) => {
     const x = 0.6 + (i % 2) * 3.1, y = 1.8 + Math.floor(i / 2) * 2.3;
     card(s, x, y, 2.9, 2.1, C.background2, `数据类型卡${i + 1}`);
@@ -371,7 +372,7 @@ function timingXml(xml, groups) {
   // ======================= 05 结论 =======================
   pres.addSection({ title: "结论" });
   s = pres.addSlide({ masterName: "SECTION_DARK", sectionTitle: "结论" });
-  head(s, "05  结论", "结论适用于 AI 用户，不宜外推", true);
+  head(s, "05  总体判断", "结论适用于 AI 用户，不宜外推", true);
   [
     ["① 依赖 AI", "部分成立", C.accent1],
     ["② 信任不足", "部分成立", C.accent1],
