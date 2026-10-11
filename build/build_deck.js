@@ -32,9 +32,9 @@ const STEP = 350, FADE = 500;
 const seq = (n, f) => Array.from({ length: n }, (_, i) => f(i + 1));
 const ANALYSIS = ["事实", "原因", "影响"].map((k) => [`${k}标签`, `${k}内容`]);
 const MOTION = [
-  [["封面图"], ["封面分隔线", "封面数字", "封面问题"]],
-  [...seq(5, (i) => [`序号${i}`, `框架名${i}`]), ["结论卡", "结论"]],
-  [["背景"], ...seq(3, (i) => [`问题编号${i}`, `问题名${i}`, `问题内容${i}`]), ["报告封面阴影", "报告封面", "封面图注"], ["研究机构"]],
+  [["封面图"], ["封面分隔线", "封面目录"]],
+  [...seq(4, (i) => [`选题标签${i}`, `选题内容${i}`]), ["报告封面阴影", "报告封面", "封面图注"]],
+  [["背景"], ...seq(3, (i) => [`背景卡${i}`, `背景数字${i}`, `背景说明${i}`]), ["背景注"], ...seq(3, (i) => [`问题编号${i}`, `问题名${i}`, `问题内容${i}`]), ["建议说明"]],
   [["说明"]],
   [...seq(2, (i) => [`数据卡${i}`, `数据${i}`, `数据说明${i}`]), ["解释标题", "原因1", "箭头1", "结果1"], ["原因2", "箭头2", "结果2"]],
   seq(4, (i) => [`步骤卡${i}`, `步骤名${i}`, `步骤数字${i}`, `步骤说明${i}`, `链箭头${i - 1}`]),
@@ -43,7 +43,7 @@ const MOTION = [
   [["原图阴影", "原图", "原图说明", "对比条"], ...ANALYSIS],
   [...seq(2, (i) => [`对比卡${i}`, `对比机构${i}`, `对比数字${i}`, `对比分母${i}`]), ...ANALYSIS],
   [[...seq(4, (i) => `数据类型卡${i}`), ...seq(4, (i) => `数据类型${i}`), ...seq(4, (i) => `数据类型数字${i}`)], ...ANALYSIS],
-  [...seq(4, (i) => [`判断环节${i}`, `判断标签${i}`, `判断标签文字${i}`]), ["讨论卡", "讨论问题"], ["可取之处"]],
+  [...seq(4, (i) => [`判断环节${i}`, `判断标签${i}`, `判断标签文字${i}`]), ["参考价值"], ["改进卡", "改进内容"], ["局限"]],
 ];
 
 // 生成 <p:timing>：页面出现后自动开始，各组以“与上一动画同时 + 延迟”的方式依次淡入
@@ -156,49 +156,55 @@ function timingXml(xml, groups) {
   s.addText("Gracenote（尼尔森旗下）2026 年研究报告评析", { placeholder: "body" });
   text(s, "黄广润　524031910373", { x: 0.8, y: 6.55, w: 5.9, h: 0.4, fontSize: 15, color: C.accent6, objectName: "汇报人" });
   rule(s, 0.8, 4.55, 5.6, "3A4766", "封面分隔线");
-  text(s, "54%", { x: 0.8, y: 4.75, w: 2.0, h: 1.0, fontSize: 48, bold: true, fontFace: "Arial", color: C.accent4, valign: "middle", objectName: "封面数字" });
   text(s, [
-    { text: "13–14 岁受访者每日使用 AI", options: { color: C.background1, breakLine: true } },
-    { text: "该比例来自哪类样本？", options: { color: C.accent6 } },
-  ], { x: 2.9, y: 4.75, w: 3.6, h: 1.0, fontSize: 16, valign: "middle", paraSpaceAfter: 4, objectName: "封面问题" });
+    { text: "01  研究背景与问题　　02  研究方法", options: { breakLine: true } },
+    { text: "03  研究结论　　　　　04  思考与评价" },
+  ], { x: 0.8, y: 4.8, w: 5.9, h: 1.0, fontSize: 16, color: C.background1, valign: "middle", paraSpaceAfter: 6, objectName: "封面目录" });
   notes(s);
 
-  // ======================= 汇报框架 =======================
+  // ======================= 选题 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "开场" });
-  head(s, "汇报框架", "报告结论的适用范围小于其表述");
-  ["研究背景与问题", "研究方法", "研究结论", "思考与评价", "总体判断"].forEach((t, i) => {
-    const y = 1.8 + i * 0.9, focus = i === 3;
-    rule(s, 0.6, y, 6.0);
-    text(s, `0${i + 1}`, { x: 0.6, y, w: 0.9, h: 0.9, fontSize: 20, bold: true, fontFace: "Arial", color: focus ? C.accent3 : C.accent5, valign: "middle", objectName: `序号${i + 1}` });
-    text(s, t, { x: 1.5, y, w: 5.0, h: 0.9, fontSize: 20, bold: focus, color: C.text2, valign: "middle", objectName: `框架名${i + 1}` });
+  head(s, "选题", "选取对象：Gracenote 2026 年 4 月的报告");
+  [
+    ["报告", [{ text: "AI 时代的电视搜索与内容发现", options: { fontSize: 22, bold: true, color: C.text2, breakLine: true } }, { text: "TV Search and Discovery in the AI Era，2026 年 4 月", options: { fontSize: 13, color: C.accent5 } }]],
+    ["机构", [{ text: "Gracenote，尼尔森旗下公司", options: { fontSize: 20, color: C.text1 } }]],
+    ["业务", [{ text: "电视与流媒体的节目数据", options: { fontSize: 20, color: C.text1, breakLine: true } }, { text: "名称、简介、播出平台、节目表", options: { fontSize: 14, color: C.accent5 } }]],
+    ["关联", [{ text: "视频软件里的节目指南，背后常常就是这类数据", options: { fontSize: 20, color: C.text1 } }]],
+  ].forEach(([k, runs], i) => {
+    const y = 1.8 + i * 1.12;
+    rule(s, 0.6, y, 7.2);
+    text(s, k, { x: 0.6, y, w: 1.0, h: 1.12, fontSize: 15, bold: true, color: C.accent3, valign: "middle", objectName: `选题标签${i + 1}` });
+    text(s, runs, { x: 1.7, y, w: 6.1, h: 1.12, valign: "middle", objectName: `选题内容${i + 1}` });
   });
-  rule(s, 0.6, 6.3, 6.0);
-  card(s, 7.2, 1.8, 5.5, 4.5, C.text2, "结论卡");
-  text(s, [
-    { text: "结论", options: { fontSize: 15, bold: true, color: C.accent4, breakLine: true } },
-    { text: "报告反映了 AI 用户的变化，具有参考价值；但样本仅限 AI 用户，结论不宜推及美国整体人群。", options: { fontSize: 22, bold: true, color: C.background1 } },
-  ], { x: 7.6, y: 2.0, w: 4.7, h: 4.1, valign: "middle", paraSpaceAfter: 16, objectName: "结论" });
+  rule(s, 0.6, 6.28, 7.2);
+  framedImage(s, "report_cover.jpg", 8.35, 2.45, 4.35, 2.64, "报告封面");
+  text(s, "报告封面", { x: 8.35, y: 5.25, w: 4.35, h: 0.35, fontSize: 13, color: C.accent5, objectName: "封面图注" });
   notes(s);
 
   // ======================= 01 背景与问题 =======================
   pres.addSection({ title: "报告介绍" });
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  head(s, "01  研究背景与问题", "研究问题：AI 如何改变节目检索");
-  text(s, "背景：流媒体平台增多，节目分散，检索成本上升；AI 聊天机器人成为新的检索工具。", { x: 0.6, y: 1.7, w: 7.2, h: 0.8, fontSize: 18, color: C.text1, valign: "middle", objectName: "背景" });
-  [["问题一", "使用频率", "各年龄层 AI 使用频率"], ["问题二", "检索难度", "检索耗时与退订意向"], ["问题三", "信任程度", "对 AI 回答的核查"]].forEach(([no, k, v], i) => {
-    const y = 2.75 + i * 0.85;
-    rule(s, 0.6, y, 7.2);
-    text(s, no, { x: 0.6, y, w: 1.0, h: 0.85, fontSize: 14, bold: true, color: C.accent5, valign: "middle", objectName: `问题编号${i + 1}` });
-    text(s, k, { x: 1.65, y, w: 2.2, h: 0.85, fontSize: 21, bold: true, color: C.text2, valign: "middle", objectName: `问题名${i + 1}` });
-    text(s, v, { x: 3.95, y, w: 3.85, h: 0.85, fontSize: 18, color: C.text1, valign: "middle", objectName: `问题内容${i + 1}` });
+  head(s, "01  研究背景与问题", "研究背景：节目分散，找节目更费劲");
+  text(s, "流媒体平台增多，节目分散；AI 聊天机器人成为新的找节目方式。", { x: 0.6, y: 1.65, w: 12.1, h: 0.5, fontSize: 18, color: C.text1, valign: "middle", objectName: "背景" });
+  [["近 350 个", "点播片库"], ["约 180 万个", "节目"], ["近 2,100 个", "免费频道"]].forEach(([num, d], i) => {
+    const x = 0.6 + i * 4.1;
+    card(s, x, 2.3, 3.9, 1.2, C.background2, `背景卡${i + 1}`);
+    text(s, num, { x: x + 0.3, y: 2.3, w: 2.3, h: 1.2, fontSize: 24, bold: true, fontFace: "Arial", color: C.accent1, valign: "middle", objectName: `背景数字${i + 1}` });
+    text(s, d, { x: x + 2.6, y: 2.3, w: 1.2, h: 1.2, fontSize: 15, color: C.text1, valign: "middle", objectName: `背景说明${i + 1}` });
   });
-  rule(s, 0.6, 5.3, 7.2);
+  text(s, "截至 2026 年 2 月，Gracenote 记录的数量（点播指 SVOD，免费频道指 FAST）", { x: 0.6, y: 3.55, w: 8, h: 0.3, fontSize: 12, color: C.accent5, objectName: "背景注" });
+  [["问题一", "使用频率", "各年龄段使用 AI 的频率"], ["问题二", "检索难度", "找节目的难度与退订意向"], ["问题三", "信任程度", "对 AI 回答的信任"]].forEach(([no, k, v], i) => {
+    const y = 4.0 + i * 0.62;
+    rule(s, 0.6, y, 12.1);
+    text(s, no, { x: 0.6, y, w: 1.2, h: 0.62, fontSize: 14, bold: true, color: C.accent5, valign: "middle", objectName: `问题编号${i + 1}` });
+    text(s, k, { x: 1.9, y, w: 2.4, h: 0.62, fontSize: 20, bold: true, color: C.text2, valign: "middle", objectName: `问题名${i + 1}` });
+    text(s, v, { x: 4.5, y, w: 8.2, h: 0.62, fontSize: 18, color: C.text1, valign: "middle", objectName: `问题内容${i + 1}` });
+  });
+  rule(s, 0.6, 5.86, 12.1);
   text(s, [
-    { text: "研究机构  ", options: { bold: true, color: C.accent3 } },
-    { text: "Gracenote，尼尔森旗下节目数据公司。报告建议接入的行业数据，即其主营业务。", options: { color: C.text1 } },
-  ], { x: 0.6, y: 5.45, w: 7.2, h: 0.85, fontSize: 17, valign: "middle", objectName: "研究机构" });
-  framedImage(s, "report_cover.jpg", 8.35, 2.75, 4.35, 2.64, "报告封面");
-  text(s, "报告封面 · Gracenote，2026 年 4 月", { x: 8.35, y: 5.55, w: 4.35, h: 0.35, fontSize: 13, color: C.accent5, objectName: "封面图注" });
+    { text: "留意  ", options: { bold: true, color: C.accent3 } },
+    { text: "报告建议 AI 接入行业数据，而提供行业数据正是 Gracenote 的业务。", options: { color: C.text1 } },
+  ], { x: 0.6, y: 5.95, w: 12.1, h: 0.6, fontSize: 18, valign: "middle", objectName: "建议说明" });
   notes(s);
 
   // ======================= 02 研究设计 =======================
@@ -226,10 +232,10 @@ function timingXml(xml, groups) {
 
   // ======================= 03 发现一 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  head(s, "03  研究结论", "结论一：AI 使用普遍，信任有限");
+  head(s, "03  研究结论", "结论一、二：年轻人依赖 AI，但信任有限");
   [
-    [0.6, "54%", "13–14 岁 AI 用户\n每日使用"],
-    [6.75, "75%", "受访者\n核对 AI 回答"],
+    [0.6, "54%", "13–14 岁受访者\n每日使用 AI"],
+    [6.75, "75%", "受访者表示会\n核对 AI 的结果"],
   ].forEach(([x, num, d], i) => {
     card(s, x, 1.8, 5.95, 2.2, C.background2, `数据卡${i + 1}`);
     text(s, num, { x: x + 0.4, y: 1.8, w: 2.6, h: 2.2, fontSize: 60, bold: true, fontFace: "Arial", color: C.accent1, valign: "middle", objectName: `数据${i + 1}` });
@@ -248,7 +254,7 @@ function timingXml(xml, groups) {
 
   // ======================= 03 发现二 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  head(s, "03  研究结论", "结论二：检索困难与退订风险");
+  head(s, "03  研究结论", "结论三、四：难找导致退订，需接入行业数据");
   [
     ["内容分散", "54%", "联网电视占美国\n电视时长"],
     ["检索耗时", "14 分钟", "平均检索时长"],
@@ -347,7 +353,7 @@ function timingXml(xml, groups) {
   analysis(s, [
     "以皮尤 30% 对比本报告 54%，\n称使用正在加速",
     "皮尤为全体青少年，\n本报告仅为 AI 用户",
-    "统一分母后差距约 10 个百分点，\n“加速”不成立",
+    "统一分母后仍差约 10 个百分点，\n还不能判断“加速”",
   ]);
   src(s, "来源：皮尤《Teens, Social Media and AI Chatbots 2025》数据表（使用者中每日使用 44%）。");
   notes(s);
@@ -363,35 +369,38 @@ function timingXml(xml, groups) {
   });
   analysis(s, [
     "退订意向、退订率、预测与\n测试数据并列使用",
-    "数据性质不一，\n且无追踪设计",
-    "仅能说明相关，\n不能证明因果",
+    "数据性质不一，\n无追踪、无对照",
+    "只能说明同时存在，\n不足以证明因果",
   ]);
   src(s, "来源：Gracenote 报告；普华永道、Veed Analytics 原文；Fabric 数据经 Broadband TV News 转述。");
   notes(s);
 
-  // ======================= 05 结论 =======================
-  pres.addSection({ title: "结论" });
-  s = pres.addSlide({ masterName: "SECTION_DARK", sectionTitle: "结论" });
-  head(s, "05  总体判断", "结论适用于 AI 用户，不宜外推", true);
+  // ======================= 05 总结 =======================
+  pres.addSection({ title: "总结" });
+  s = pres.addSlide({ masterName: "SECTION_DARK", sectionTitle: "总结" });
+  head(s, "05  总结", "有参考价值，但结论超出样本所能支持的范围", true);
   [
-    ["① 依赖 AI", "部分成立", C.accent1],
-    ["② 信任不足", "部分成立", C.accent1],
-    ["③ 难找导致退订", "证据不足", C.accent3],
+    ["① 年轻人依赖 AI", "仅限 AI 用户", C.accent1],
+    ["② 信任有限", "仅限 AI 用户", C.accent1],
+    ["③ 难找导致退订", "只能说相关", C.accent3],
     ["④ 接入行业数据", "未经检验", C.accent5],
   ].forEach(([k, tag, col], i) => {
-    const y = 1.95 + i * 0.95;
+    const y = 1.75 + i * 0.9;
     rule(s, 0.8, y, 7.3, "3A4766", "结论分隔线");
-    text(s, k, { x: 0.8, y, w: 4.8, h: 0.95, fontSize: 20, bold: true, color: C.background1, valign: "middle", objectName: `判断环节${i + 1}` });
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 6.35, y: y + 0.24, w: 1.75, h: 0.47, rectRadius: 0.05, fill: { color: col }, line: { color: col }, objectName: `判断标签${i + 1}` });
-    text(s, tag, { x: 6.35, y: y + 0.24, w: 1.75, h: 0.47, fontSize: 15, bold: true, color: C.background1, align: "center", valign: "middle", objectName: `判断标签文字${i + 1}` });
+    text(s, k, { x: 0.8, y, w: 5.2, h: 0.9, fontSize: 20, bold: true, color: C.background1, valign: "middle", objectName: `判断环节${i + 1}` });
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 6.1, y: y + 0.21, w: 2.0, h: 0.47, rectRadius: 0.05, fill: { color: col }, line: { color: col }, objectName: `判断标签${i + 1}` });
+    text(s, tag, { x: 6.1, y: y + 0.21, w: 2.0, h: 0.47, fontSize: 15, bold: true, color: C.background1, align: "center", valign: "middle", objectName: `判断标签文字${i + 1}` });
   });
-  rule(s, 0.8, 5.75, 7.3, "3A4766", "结论分隔线");
-  text(s, "年轻人更多用 AI 找内容、AI 回答不够可靠，这两个方向与皮尤、Veed 等独立来源一致。", { x: 0.8, y: 5.95, w: 11.7, h: 0.45, fontSize: 16, color: C.accent6, valign: "middle", objectName: "可取之处" });
-  card(s, 8.7, 1.95, 3.85, 3.8, C.background1, "讨论卡");
+  rule(s, 0.8, 5.35, 7.3, "3A4766", "结论分隔线");
+  text(s, "皮尤、Veed 等独立来源也指向同样两个方向：年轻人更多用 AI 找内容，AI 回答“在哪看”不够可靠。", { x: 0.8, y: 5.45, w: 7.3, h: 0.8, fontSize: 16, color: C.accent6, valign: "middle", objectName: "参考价值" });
+  card(s, 8.45, 1.75, 4.1, 4.5, C.background1, "改进卡");
   text(s, [
-    { text: "讨论", options: { fontSize: 15, bold: true, color: C.accent3, breakLine: true } },
-    { text: "如何设计调查，\n检验检索困难与\n退订的因果关系？", options: { fontSize: 22, bold: true, color: C.text2 } },
-  ], { x: 9.05, y: 2.1, w: 3.2, h: 3.5, valign: "middle", paraSpaceAfter: 14, objectName: "讨论问题" });
+    { text: "改进方向", options: { fontSize: 15, bold: true, color: C.accent3, breakLine: true } },
+    { text: "采用概率样本，含非 AI 用户", options: { fontSize: 17, bold: true, color: C.text2, breakLine: true } },
+    { text: "同一问卷问困难与退订，追踪同一批人", options: { fontSize: 17, bold: true, color: C.text2, breakLine: true } },
+    { text: "公开招募、配额、加权、回收率", options: { fontSize: 17, bold: true, color: C.text2 } },
+  ], { x: 8.75, y: 1.95, w: 3.6, h: 4.1, valign: "middle", paraSpaceAfter: 14, objectName: "改进内容" });
+  text(s, "局限：评价依据公开资料；个别来源只有媒体转述，如 Fabric 的流失率。", { x: 0.8, y: 6.5, w: 11.7, h: 0.4, fontSize: 13, color: C.accent6, valign: "middle", objectName: "局限" });
   notes(s);
 
   await pres.writeFile({ fileName: OUT });

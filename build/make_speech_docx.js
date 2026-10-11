@@ -1,36 +1,38 @@
-// 生成演讲用讲稿 Word：大字号、短句分行、每页有一句话主旨和翻页提示，便于边讲边瞄
+// 生成手机阅读用讲稿：页面按手机屏幕比例（9:16），一页对应一张幻灯片，翻一屏就是翻一页 PPT
+// 每页：进度与累计时间 → 一句话主旨 → 短句分行的讲稿 → 翻页提示；数字用橙色加粗
 // 用法：node build/make_speech_docx.js [输出 docx 路径]
 const fs = require("fs");
 const path = require("path");
 const D = require("docx");
-const { Document, Packer, Paragraph, TextRun, AlignmentType, BorderStyle, ShadingType, Footer, PageNumber, Table, TableRow, TableCell, WidthType } = D;
+const { Document, Packer, Paragraph, TextRun, BorderStyle, ShadingType } = D;
 const SCRIPT = require("./script.js");
 
 const OUT = process.argv[2] || path.join(__dirname, "..", "讲稿_演讲用.docx");
 const FONT = { ascii: "Arial", hAnsi: "Arial", eastAsia: "Microsoft YaHei", cs: "Arial" };
 const NAVY = "1F2A44", ORANGE = "C2410C", GRAY = "6B7280";
+const BODY = 40;           // 半磅：20 磅
+const LINE_CAP = 12;       // 每行最多约 12 个汉字
 const mmss = (t) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
+const run = (text, o = {}) => new TextRun({ text, font: FONT, size: BODY, ...o });
+const width = (t) => [...t].reduce((a, c) => a + (/[\u0000-ÿ]/.test(c) ? 0.55 : 1), 0);
 
-const run = (text, o = {}) => new TextRun({ text, font: FONT, size: 40, ...o });
-
-// 短句分行：先按句号、分号断句，长句再按逗号合并成不超过约 20 字的行
+// 分行：按逗号、分号、句号切成小段，再合并到不超过 LINE_CAP；每个句号后多空一点
 function toLines(text) {
   const out = [];
   for (const sent of text.split(/(?<=[。；？])/).filter(Boolean)) {
-    const parts = sent.split(/(?<=，)/);
+    const lines = [];
     let cur = "";
-    const group = [];
-    for (const p of parts) {
-      if (cur && cur.replace(/\s/g, "").length >= 8 && (cur + p).replace(/\s/g, "").length > 17) { group.push(cur); cur = p; } else cur += p;
+    for (const u of sent.split(/(?<=[，、：])/)) {
+      if (cur && width(cur + u) > LINE_CAP) { lines.push(cur); cur = u; } else cur += u;
     }
-    if (cur) group.push(cur);
-    out.push(group);
+    if (cur) lines.push(cur);
+    out.push(lines);
   }
   return out;
 }
-// 数字与关键量词加粗变色，卡壳时一眼能找到
+// 数字与关键量词加粗变色
 function highlighted(line) {
-  const re = /(\d[\d,.]*\s?(?:%|分钟|个百分点|岁|国|名)?|三分之二|四个环节|四类数据)/g;
+  const re = /(\d[\d,.]*\s?(?:%|分钟|个百分点|岁|国|名)?|三分之二|四项|四类数据)/g;
   const out = [];
   let last = 0, m;
   while ((m = re.exec(line))) {
@@ -43,61 +45,48 @@ function highlighted(line) {
 }
 
 const children = [];
-const total = SCRIPT.reduce((a, x) => a + x.secs, 0);
 let acc = 0;
-const cum = SCRIPT.map((x) => (acc += x.secs));
-
-children.push(
-  new Paragraph({ spacing: { after: 80 }, children: [run("演讲稿：Gracenote 2026 AI 报告评析", { size: 40, bold: true, color: NAVY })] }),
-  new Paragraph({ spacing: { after: 160 }, children: [run(`共 ${SCRIPT.length} 页，约 ${mmss(total)}。每页先看灰底的一句话主旨，卡住时只讲这一句再翻页。橙色加粗为必须说准的数字。`, { size: 26, color: GRAY })] }),
-);
-const checkpoints = [[4, "研究方法讲完"], [7, "评价思路讲完"], [10, "调查时间讲完"], [12, "全部结束"]];
-children.push(new Paragraph({
-  spacing: { after: 240 }, border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: "D5DAE1", space: 8 } },
-  children: [run("时间检查点　", { size: 26, bold: true, color: NAVY }), ...checkpoints.map(([p, t]) => run(`第 ${p} 页（${t}）${mmss(cum[p - 1])}　`, { size: 26 }))],
-}));
-
 SCRIPT.forEach((x, i) => {
+  acc += x.secs;
+  const first = i === 0;
   children.push(new Paragraph({
-    keepNext: true, spacing: { before: 280, after: 100 },
-    border: { top: { style: BorderStyle.SINGLE, size: 12, color: NAVY, space: 6 } },
-    children: [run(`第 ${i + 1} 页　${x.title}`, { size: 32, bold: true, color: NAVY }), run(`　约 ${x.secs} 秒 · 累计 ${mmss(cum[i])}`, { size: 24, color: GRAY })],
+    pageBreakBefore: !first, spacing: { after: 80 },
+    children: [run(`${i + 1}/${SCRIPT.length}`, { size: 28, bold: true, color: NAVY }), run(`　${x.title}　累计 ${mmss(acc)}`, { size: 28, color: GRAY })],
   }));
   children.push(new Paragraph({
-    keepNext: true, spacing: { after: 140 }, shading: { type: ShadingType.CLEAR, fill: "EEF1F6", color: "auto" },
-    indent: { left: 120, right: 120 },
-    children: [run(x.cue, { size: 32, bold: true, color: NAVY })],
+    spacing: { after: 140 }, shading: { type: ShadingType.CLEAR, fill: "EEF1F6", color: "auto" }, indent: { left: 80, right: 80 },
+    children: [run(x.cue, { size: 34, bold: true, color: NAVY })],
   }));
   const groups = toLines(x.text);
   groups.forEach((g, gi) => g.forEach((line, li) => {
-    const lastOfAll = gi === groups.length - 1 && li === g.length - 1;
     children.push(new Paragraph({
-      keepNext: !lastOfAll || !!x.next, keepLines: true,
-      spacing: { after: li === g.length - 1 ? 110 : 20, line: 420 },
+      keepLines: true, spacing: { after: li === g.length - 1 ? 100 : 10, line: 440 },
       children: highlighted(line.trim()),
     }));
   }));
-  if (x.next) children.push(new Paragraph({ spacing: { after: 60 }, children: [run(`▶ 翻页：${x.next}`, { size: 26, color: GRAY })] }));
+  if (x.next) children.push(new Paragraph({
+    spacing: { before: 60 }, border: { top: { style: BorderStyle.SINGLE, size: 6, color: "D5DAE1", space: 4 } },
+    children: [run(`▶ 翻页：${x.next}`, { size: 30, color: GRAY })],
+  }));
 });
 
-// 被问到时
-children.push(new Paragraph({ keepNext: true, spacing: { before: 360, after: 120 }, border: { top: { style: BorderStyle.SINGLE, size: 12, color: NAVY, space: 6 } }, children: [run("被问到时（一句话回答）", { size: 32, bold: true, color: NAVY })] }));
+// 末页：被问到时
+children.push(new Paragraph({ pageBreakBefore: true, spacing: { after: 140 }, children: [run("被问到时", { size: 30, bold: true, color: NAVY })] }));
 [
   ["样本不能代表美国人，报告还有价值吗？", "有，对 AI 用户的描述可以参考；引用时要限定在 AI 用户。"],
   ["六国均值只是表述问题吗？", "数据不一定错，但放在美国图表里会让人以为美国是 14 分钟，实际是 12。"],
   ["54% 和皮尤的 24% 为什么不能比？", "皮尤分母是全体青少年，本报告只有 AI 用户；换成使用者，皮尤是 44%。"],
 ].forEach(([q, a]) => {
-  children.push(new Paragraph({ keepNext: true, spacing: { after: 20 }, children: [run(`问：${q}`, { size: 30, bold: true })] }));
-  children.push(new Paragraph({ spacing: { after: 140 }, indent: { left: 360 }, children: [run(a, { size: 30 })] }));
+  children.push(new Paragraph({ spacing: { after: 20 }, children: [run(`问：${q}`, { bold: true })] }));
+  children.push(new Paragraph({ spacing: { after: 140 }, indent: { left: 200 }, children: [run(a)] }));
 });
 
 const doc = new Document({
-  creator: "", title: "演讲稿：Gracenote 2026 AI 报告评析",
-  styles: { default: { document: { run: { font: FONT, size: 36 } } } },
+  creator: "", title: "演讲稿：Gracenote 2026 AI 报告评析（手机版）",
+  styles: { default: { document: { run: { font: FONT, size: BODY } } } },
   sections: [{
-    properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 900, bottom: 900, left: 1000, right: 1000 } } },
-    footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ children: [PageNumber.CURRENT], font: FONT, size: 20, color: GRAY })] })] }) },
+    properties: { page: { size: { width: 6123, height: 10886 }, margin: { top: 400, bottom: 400, left: 400, right: 400 } } },
     children,
   }],
 });
-Packer.toBuffer(doc).then((b) => { fs.writeFileSync(OUT, b); console.log("written", OUT, mmss(total)); });
+Packer.toBuffer(doc).then((b) => { fs.writeFileSync(OUT, b); console.log("written", OUT, mmss(acc)); });
