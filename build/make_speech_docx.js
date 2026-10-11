@@ -1,5 +1,5 @@
 // 生成手机阅读用讲稿：页面按手机屏幕比例（9:16），一页对应一张幻灯片，翻一屏就是翻一页 PPT
-// 每页：进度与累计时间 → 一句话主旨 → 短句分行的讲稿 → 翻页提示；数字用橙色加粗
+// 每页：进度与累计时间 → 一句话主旨 → 短句分行的讲稿；（括号内）是 PPT 上没有的话，灰色；数字橙色加粗
 // 用法：node build/make_speech_docx.js [输出 docx 路径]
 const fs = require("fs");
 const path = require("path");
@@ -7,7 +7,7 @@ const D = require("docx");
 const { Document, Packer, Paragraph, TextRun, BorderStyle, ShadingType } = D;
 const SCRIPT = require("./script.js");
 
-const OUT = process.argv[2] || path.join(__dirname, "..", "讲稿_演讲用.docx");
+const OUT = process.argv[2] || path.join(__dirname, "..", "讲稿_演讲用_最新版.docx");
 const FONT = { ascii: "Arial", hAnsi: "Arial", eastAsia: "Microsoft YaHei", cs: "Arial" };
 const NAVY = "1F2A44", ORANGE = "C2410C", GRAY = "6B7280";
 const BODY = 40;           // 半磅：20 磅
@@ -16,23 +16,59 @@ const mmss = (t) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
 const run = (text, o = {}) => new TextRun({ text, font: FONT, size: BODY, ...o });
 const width = (t) => [...t].reduce((a, c) => a + (/[\u0000-ÿ]/.test(c) ? 0.55 : 1), 0);
 
-// 分行：按逗号、分号、句号切成小段，再合并到不超过 LINE_CAP；每个句号后多空一点
-function toLines(text) {
+// 把文本拆成字符，并标记是否在（括号）内；括号内的字用灰色显示
+function chars(text) {
   const out = [];
-  for (const sent of text.split(/(?<=[。；？])/).filter(Boolean)) {
-    const lines = [];
-    let cur = "";
-    for (const u of sent.split(/(?<=[，、：])/)) {
-      if (cur && width(cur + u) > LINE_CAP) { lines.push(cur); cur = u; } else cur += u;
-    }
-    if (cur) lines.push(cur);
-    out.push(lines);
+  let depth = 0;
+  for (const c of text) {
+    if (c === "（") depth++;
+    out.push({ c, off: depth > 0 });
+    if (c === "）") depth = Math.max(0, depth - 1);
+  }
+  return out;
+}
+// 分行：在逗号、顿号、冒号、分号、句号后断开（紧跟的右括号归前一段），再合并到不超过 LINE_CAP；句末另起一组
+function toLines(text) {
+  const cs = chars(text), units = [];
+  let cur = [];
+  cs.forEach((x, i) => {
+    cur.push(x);
+    const nxt = cs[i + 1];
+    if ("，、：；。？".includes(x.c) && !(nxt && nxt.c === "）")) { units.push(cur); cur = []; }
+    else if (x.c === "）" && "，、：；。？".includes(cs[i - 1].c)) { units.push(cur); cur = []; }
+  });
+  if (cur.length) units.push(cur);
+  const groups = [];
+  let group = [], line = [];
+  const w = (arr) => width(arr.map((x) => x.c).join(""));
+  for (const u of units) {
+    if (line.length && w(line) + w(u) > LINE_CAP) { group.push(line); line = []; }
+    line = line.concat(u);
+    const end = u.map((x) => x.c).join("").replace(/）$/, "");
+    if (/[。？]$/.test(end)) { group.push(line); groups.push(group); group = []; line = []; }
+  }
+  if (line.length) group.push(line);
+  if (group.length) groups.push(group);
+  return groups;
+}
+// 一行渲染成若干 run：括号内灰色；括号外的数字橙色加粗
+function renderLine(line) {
+  const out = [];
+  let i = 0;
+  while (i < line.length) {
+    const off = line[i].off;
+    let j = i;
+    while (j < line.length && line[j].off === off) j++;
+    const seg = line.slice(i, j).map((x) => x.c).join("");
+    if (off) out.push(run(seg, { color: GRAY }));
+    else out.push(...highlighted(seg));
+    i = j;
   }
   return out;
 }
 // 数字与关键量词加粗变色
 function highlighted(line) {
-  const re = /(\d[\d,.]*\s?(?:%|分钟|个百分点|岁|国|名)?|三分之二|四项|四类数据)/g;
+  const re = /(\d[\d,.]*\s?(?:%|分钟|个百分点|岁|国|名|人)?|三分之二|四项|四类)/g;
   const out = [];
   let last = 0, m;
   while ((m = re.exec(line))) {
@@ -57,16 +93,12 @@ SCRIPT.forEach((x, i) => {
     spacing: { after: 140 }, shading: { type: ShadingType.CLEAR, fill: "EEF1F6", color: "auto" }, indent: { left: 80, right: 80 },
     children: [run(x.cue, { size: 34, bold: true, color: NAVY })],
   }));
-  const groups = toLines(x.text);
-  groups.forEach((g, gi) => g.forEach((line, li) => {
+  if (first) children.push(new Paragraph({ spacing: { after: 100 }, children: [run("（灰色括号）内是 PPT 上没有的话：问候、过渡和补充。", { size: 24, color: GRAY })] }));
+  toLines(x.text).forEach((g) => g.forEach((line, li) => {
     children.push(new Paragraph({
       keepLines: true, spacing: { after: li === g.length - 1 ? 100 : 10, line: 440 },
-      children: highlighted(line.trim()),
+      children: renderLine(line),
     }));
-  }));
-  if (x.next) children.push(new Paragraph({
-    spacing: { before: 60 }, border: { top: { style: BorderStyle.SINGLE, size: 6, color: "D5DAE1", space: 4 } },
-    children: [run(`▶ 翻页：${x.next}`, { size: 30, color: GRAY })],
   }));
 });
 
