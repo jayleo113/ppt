@@ -67,7 +67,7 @@ while (i < lines.length) {
       children: l.slice(2).split(/(?<=》)(?=报告)/).flatMap((t, k) => runs(t, { font: headFont, size: 36, run: { bold: true, break: k ? 1 : 0 } })) }));
   } else if (l.startsWith("## ")) children.push(heading(l.slice(3), 1));
   else if (l.startsWith("### ")) children.push(heading(l.slice(4), 2));
-  else if (l.startsWith("课程：")) {
+  else if (l.startsWith("黄广润")) {
     children.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 240 }, children: runs(l.replace(/　+/g, "　　"), { size: 22 }) }));
   } else if (l.startsWith("|")) {
     const rows = [];
