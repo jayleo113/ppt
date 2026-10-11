@@ -37,13 +37,12 @@ const MOTION = [
   [["背景"], ...seq(3, (i) => [`背景卡${i}`, `背景数字${i}`, `背景说明${i}`]), ["背景注"], ...seq(3, (i) => [`问题编号${i}`, `问题名${i}`, `问题内容${i}`]), ["建议说明"]],
   [["说明"]],
   [...seq(2, (i) => [`数据卡${i}`, `数据${i}`, `数据说明${i}`]), ["解释标题", "原因1", "箭头1", "结果1"], ["原因2", "箭头2", "结果2"]],
-  seq(4, (i) => [`步骤卡${i}`, `步骤名${i}`, `步骤数字${i}`, `步骤说明${i}`, `链箭头${i - 1}`]),
-  [...seq(4, (i) => [`环节${i}`, `环节文字${i}`, `环节箭头${i - 1}`, `检验标签${i}`, `检验文字${i}`]), ["评价说明"]],
-  [[...seq(4, (i) => `总体圈${i}`), ...seq(3, (i) => `总体标签${i}`), "样本标签"], ...ANALYSIS],
+  [["结论三标题"], ...seq(3, (i) => [`步骤卡${i}`, `步骤名${i}`, `步骤数字${i}`, `步骤说明${i}`]), ["分组线", "结论四标题", "步骤卡4", "步骤名4", "步骤数字4", "步骤说明4"]],
+  [[...seq(4, (i) => `总体圈${i}`), ...seq(3, (i) => `总体标签${i}`), "样本标签"], ...ANALYSIS, ["误导示例"]],
   [["原图阴影", "原图", "原图说明", "对比条"], ...ANALYSIS],
   [...seq(2, (i) => [`对比卡${i}`, `对比机构${i}`, `对比数字${i}`, `对比分母${i}`]), ...ANALYSIS],
-  [[...seq(4, (i) => `数据类型卡${i}`), ...seq(4, (i) => `数据类型${i}`), ...seq(4, (i) => `数据类型数字${i}`)], ...ANALYSIS],
-  [...seq(4, (i) => [`判断环节${i}`, `判断标签${i}`, `判断标签文字${i}`]), ["参考价值"], ["改进卡", "改进内容"], ["局限"]],
+  [[...seq(4, (i) => `数据类型卡${i}`), ...seq(4, (i) => `数据类型${i}`), ...seq(4, (i) => `数据类型数字${i}`), ...seq(4, (i) => `数据类型说明${i}`)], ...ANALYSIS],
+  [...seq(3, (i) => [`判断环节${i}`, `判断标签${i}`, `判断标签文字${i}`]), ["参考价值"], ["改进卡", "改进内容"], ["局限"]],
 ];
 
 // 生成 <p:timing>：页面出现后自动开始，各组以“与上一动画同时 + 延迟”的方式依次淡入
@@ -241,8 +240,8 @@ function timingXml(xml, groups) {
     text(s, num, { x: x + 0.4, y: 1.8, w: 2.6, h: 2.2, fontSize: 60, bold: true, fontFace: "Arial", color: C.accent1, valign: "middle", objectName: `数据${i + 1}` });
     text(s, d.split("\n").map((l, k, arr) => ({ text: l, options: { fontSize: k === 2 ? 14 : 20, color: k === 2 ? C.accent5 : C.text1, breakLine: k < arr.length - 1 } })), { x: x + 3.0, y: 1.8, w: 2.8, h: 2.2, valign: "middle", objectName: `数据说明${i + 1}` });
   });
-  text(s, "报告的解释", { x: 0.6, y: 4.35, w: 4, h: 0.4, fontSize: 16, bold: true, color: C.accent5, objectName: "解释标题" });
-  [["回答直接、可追问", "使用增加"], ["可能生成错误信息", "需要核对"]].forEach(([cause, effect], i) => {
+  text(s, "报告对数据的解释", { x: 0.6, y: 4.35, w: 4, h: 0.4, fontSize: 16, bold: true, color: C.accent5, objectName: "解释标题" });
+  [["AI 回答直接、可追问", "使用增加"], ["但是 AI 可能生成错误信息", "需要核对"]].forEach(([cause, effect], i) => {
     const y = 4.85 + i * 0.75;
     rule(s, 0.6, y, 12.1);
     text(s, cause, { x: 0.6, y, w: 6.5, h: 0.75, fontSize: 20, color: C.text1, valign: "middle", objectName: `原因${i + 1}` });
@@ -252,48 +251,31 @@ function timingXml(xml, groups) {
   rule(s, 0.6, 6.35, 12.1);
   notes(s);
 
-  // ======================= 03 发现二 =======================
+  // ======================= 03 结论三、四 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
-  head(s, "03  研究结论", "结论三、四：难找导致退订，需接入行业数据");
+  head(s, "03  研究结论", "结论三、四：难找可能导致退订，AI 应接入行业数据");
+  text(s, [{ text: "结论三　", options: { bold: true, color: C.accent3 } }, { text: "内容难找，可能导致退订", options: { bold: true, color: C.text2 } }],
+    { x: 0.6, y: 1.7, w: 8.8, h: 0.5, fontSize: 18, valign: "middle", objectName: "结论三标题" });
+  text(s, [{ text: "结论四", options: { bold: true, color: C.accent3 } }],
+    { x: 9.9, y: 1.7, w: 2.8, h: 0.5, fontSize: 18, valign: "middle", objectName: "结论四标题" });
   [
     ["内容分散", "54%", "联网电视占美国\n电视时长"],
     ["检索耗时", "14 分钟", "平均检索时长"],
     ["退订意向", "54%", "18–34 岁表示\n可能退订"],
-    ["接入行业数据", "约 2/3", "AI 正确回答\n播出平台的比例"],
+    ["AI 应接入行业数据", "约 2/3", "依据：AI 正确回答\n播出平台的比例"],
   ].forEach(([k, num, d], i) => {
-    const x = 0.6 + i * 3.1, last = i === 3;
-    card(s, x, 1.85, 2.8, 4.1, last ? C.text2 : C.background2, `步骤卡${i + 1}`);
-    text(s, k, { x: x + 0.3, y: 2.1, w: 2.3, h: 0.5, fontSize: 20, bold: true, color: last ? C.background1 : C.text2, objectName: `步骤名${i + 1}` });
-    text(s, num, { x: x + 0.3, y: 3.0, w: 2.3, h: 1.1, fontSize: num.length > 4 ? 36 : 44, bold: true, fontFace: "Arial", color: last ? C.accent4 : C.accent1, valign: "middle", objectName: `步骤数字${i + 1}` });
-    text(s, d, { x: x + 0.3, y: 4.3, w: 2.3, h: 1.2, fontSize: 16, color: last ? C.accent6 : C.text1, valign: "top", objectName: `步骤说明${i + 1}` });
-    if (!last) arrowR(s, x + 2.8, 1.85, 4.1, `链箭头${i + 1}`);
+    const last = i === 3, x = last ? 9.9 : 0.6 + i * 3.0;
+    card(s, x, 2.35, 2.8, 3.6, last ? C.text2 : C.background2, `步骤卡${i + 1}`);
+    text(s, k, { x: x + 0.25, y: 2.6, w: 2.45, h: 0.5, fontSize: last ? 17 : 20, bold: true, color: last ? C.background1 : C.text2, objectName: `步骤名${i + 1}` });
+    text(s, num, { x: x + 0.3, y: 3.3, w: 2.3, h: 1.1, fontSize: num.length > 4 ? 36 : 44, bold: true, fontFace: "Arial", color: last ? C.accent4 : C.accent1, valign: "middle", objectName: `步骤数字${i + 1}` });
+    text(s, d, { x: x + 0.3, y: 4.6, w: 2.3, h: 1.1, fontSize: 16, color: last ? C.accent6 : C.text1, valign: "top", objectName: `步骤说明${i + 1}` });
   });
+  s.addShape(pres.shapes.LINE, { x: 9.65, y: 1.75, w: 0, h: 4.2, line: { color: RULE, width: 0.75 }, objectName: "分组线" });
   src(s, "数据：尼尔森收视测量；调查二（六国）；Veed Analytics 测试（报告引用）。");
   notes(s);
 
-  // ======================= 04 评价思路 =======================
-  pres.addSection({ title: "方法评价" });
-  s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
-  head(s, "04  思考与评价", "评价：逐项检验四个推论环节");
-  [
-    ["① 依赖 AI", "调查对象\n调查时间"],
-    ["② 信任有限", "调查对象"],
-    ["③ 难找导致退订", "调查范围\n研究方法"],
-    ["④ 接入行业数据", "研究方法"],
-  ].forEach(([k, dims], i) => {
-    const x = 0.6 + i * 3.1;
-    card(s, x, 1.8, 2.8, 0.95, C.text2, `环节${i + 1}`);
-    text(s, k, { x, y: 1.8, w: 2.8, h: 0.95, fontSize: 19, bold: true, color: C.background1, align: "center", valign: "middle", objectName: `环节文字${i + 1}` });
-    if (i < 3) arrowR(s, x + 2.8, 1.8, 0.95, `环节箭头${i + 1}`);
-    text(s, "检验", { x, y: 3.0, w: 2.8, h: 0.35, fontSize: 13, color: C.accent5, align: "center", objectName: `检验标签${i + 1}` });
-    rule(s, x, 3.4, 2.8);
-    text(s, dims, { x, y: 3.5, w: 2.8, h: 1.3, fontSize: 20, bold: true, color: C.accent1, align: "center", valign: "middle", objectName: `检验文字${i + 1}` });
-    rule(s, x, 4.9, 2.8);
-  });
-  text(s, "调查对象、范围、时间与方法的差异均会影响结果，以下逐项检验。", { x: 0.6, y: 5.5, w: 12.1, h: 0.6, fontSize: 18, color: C.text1, valign: "middle", objectName: "评价说明" });
-  notes(s);
-
   // ======================= 调查对象 =======================
+  pres.addSection({ title: "方法评价" });
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
   head(s, "04  思考与评价", "调查对象：样本仅为 AI 用户");
   [
@@ -312,9 +294,9 @@ function timingXml(xml, groups) {
   analysis(s, [
     "受访者 4,003 人，\n均为 AI 聊天机器人用户",
     "以使用 AI 为筛选条件，\n不含非用户",
-    "结果仅代表 AI 用户，\n不能推及全体美国人",
+    "结果仅代表 AI 用户，\n报告却写作“美国消费者”",
   ]);
-  src(s, "来源：Gracenote 报告；尼尔森新闻稿。");
+  text(s, "例：“52% 的美国消费者认为 AI 可能成为最喜欢的娱乐信息来源”——分母实为 AI 用户，易被读成全美国的比例。", { x: 0.6, y: 6.5, w: 12.1, h: 0.4, fontSize: 13, color: C.text2, valign: "middle", objectName: "误导示例" });
   notes(s);
 
   // ======================= 调查范围 =======================
@@ -339,16 +321,16 @@ function timingXml(xml, groups) {
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
   head(s, "04  思考与评价", "调查时间：比较基准不一致");
   [
-    [1.8, "皮尤研究中心 · 2025 年秋", "24%", "全体 13–14 岁青少年", C.accent5],
-    [4.15, "本报告 · 2026 年初", "54%", "13–14 岁 AI 用户", C.accent1],
-  ].forEach(([y, who, num, base, col], i) => {
+    [1.8, "皮尤研究中心 · 2025 年秋", "概率样本，1,458 名美国 13–17 岁青少年", "24%", "全体 13–14 岁青少年", C.accent5],
+    [4.15, "本报告 · 2026 年初", "线上问卷，4,003 名美国 AI 用户", "54%", "13–14 岁 AI 用户", C.accent1],
+  ].forEach(([y, who, how, num, base, col], i) => {
     card(s, 0.6, y, 6.0, 2.1, C.background2, `对比卡${i + 1}`);
-    text(s, who, { x: 0.95, y: y + 0.2, w: 5.4, h: 0.4, fontSize: 16, bold: true, color: col, objectName: `对比机构${i + 1}` });
-    text(s, num, { x: 0.95, y: y + 0.65, w: 2.4, h: 1.25, fontSize: 56, bold: true, fontFace: "Arial", color: col, valign: "middle", objectName: `对比数字${i + 1}` });
+    text(s, [{ text: who, options: { fontSize: 16, bold: true, color: col, breakLine: true } }, { text: how, options: { fontSize: 12, color: C.accent5 } }], { x: 0.95, y: y + 0.15, w: 5.4, h: 0.65, valign: "top", objectName: `对比机构${i + 1}` });
+    text(s, num, { x: 0.95, y: y + 0.8, w: 2.4, h: 1.15, fontSize: 52, bold: true, fontFace: "Arial", color: col, valign: "middle", objectName: `对比数字${i + 1}` });
     text(s, [
       { text: "分母", options: { fontSize: 14, color: C.accent5, breakLine: true } },
       { text: base, options: { fontSize: 18, bold: true, color: C.text1 } },
-    ], { x: 3.4, y: y + 0.65, w: 3.0, h: 1.25, valign: "middle", objectName: `对比分母${i + 1}` });
+    ], { x: 3.4, y: y + 0.8, w: 3.0, h: 1.15, valign: "middle", objectName: `对比分母${i + 1}` });
   });
   analysis(s, [
     "以皮尤 30% 对比本报告 54%，\n称使用正在加速",
@@ -361,11 +343,12 @@ function timingXml(xml, groups) {
   // ======================= 研究方法 =======================
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "方法评价" });
   head(s, "04  思考与评价", "研究方法：因果关系未经检验");
-  [["意向 · 问卷", "54%"], ["行为 · 退订率", "5.5%"], ["预测 · 普华永道", "3,185 亿美元"], ["测试 · AI 答题", "约 2/3"]].forEach(([k, num], i) => {
+  [["意向 · 问卷", "54%", "18–34 岁称可能退订"], ["行为 · 退订率", "5.5%", "行业月流失率（转述）"], ["预测 · 普华永道", "3,185 亿美元", "2029 年全球市场支出"], ["测试 · AI 答题", "约 2/3", "AI 正确回答播出平台"]].forEach(([k, num, d], i) => {
     const x = 0.6 + (i % 2) * 3.1, y = 1.8 + Math.floor(i / 2) * 2.3;
     card(s, x, y, 2.9, 2.1, C.background2, `数据类型卡${i + 1}`);
     text(s, k, { x: x + 0.3, y: y + 0.25, w: 2.4, h: 0.4, fontSize: 16, bold: true, color: C.accent5, objectName: `数据类型${i + 1}` });
-    text(s, num, { x: x + 0.3, y: y + 0.75, w: 2.5, h: 1.05, fontSize: num.length > 5 ? 26 : 38, bold: true, fontFace: "Arial", color: C.text2, valign: "middle", objectName: `数据类型数字${i + 1}` });
+    text(s, d, { x: x + 0.3, y: y + 1.55, w: 2.5, h: 0.4, fontSize: 13, color: C.text1, objectName: `数据类型说明${i + 1}` });
+    text(s, num, { x: x + 0.3, y: y + 0.65, w: 2.5, h: 0.9, fontSize: num.length > 5 ? 26 : 36, bold: true, fontFace: "Arial", color: C.text2, valign: "middle", objectName: `数据类型数字${i + 1}` });
   });
   analysis(s, [
     "退订意向、退订率、预测与\n测试数据并列使用",
@@ -383,13 +366,12 @@ function timingXml(xml, groups) {
     ["① 年轻人依赖 AI", "仅限 AI 用户", C.accent1],
     ["② 信任有限", "仅限 AI 用户", C.accent1],
     ["③ 难找导致退订", "只能说相关", C.accent3],
-    ["④ 接入行业数据", "未经检验", C.accent5],
   ].forEach(([k, tag, col], i) => {
-    const y = 1.75 + i * 0.9;
+    const y = 1.75 + i * 1.2;
     rule(s, 0.8, y, 7.3, "3A4766", "结论分隔线");
-    text(s, k, { x: 0.8, y, w: 5.2, h: 0.9, fontSize: 20, bold: true, color: C.background1, valign: "middle", objectName: `判断环节${i + 1}` });
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 6.1, y: y + 0.21, w: 2.0, h: 0.47, rectRadius: 0.05, fill: { color: col }, line: { color: col }, objectName: `判断标签${i + 1}` });
-    text(s, tag, { x: 6.1, y: y + 0.21, w: 2.0, h: 0.47, fontSize: 15, bold: true, color: C.background1, align: "center", valign: "middle", objectName: `判断标签文字${i + 1}` });
+    text(s, k, { x: 0.8, y, w: 5.2, h: 1.2, fontSize: 20, bold: true, color: C.background1, valign: "middle", objectName: `判断环节${i + 1}` });
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 6.1, y: y + 0.36, w: 2.0, h: 0.47, rectRadius: 0.05, fill: { color: col }, line: { color: col }, objectName: `判断标签${i + 1}` });
+    text(s, tag, { x: 6.1, y: y + 0.36, w: 2.0, h: 0.47, fontSize: 15, bold: true, color: C.background1, align: "center", valign: "middle", objectName: `判断标签文字${i + 1}` });
   });
   rule(s, 0.8, 5.35, 7.3, "3A4766", "结论分隔线");
   text(s, "皮尤、Veed 等独立来源也指向同样两个方向：年轻人更多用 AI 找内容，AI 回答“在哪看”不够可靠。", { x: 0.8, y: 5.45, w: 7.3, h: 0.8, fontSize: 16, color: C.accent6, valign: "middle", objectName: "参考价值" });

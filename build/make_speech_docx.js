@@ -10,8 +10,8 @@ const SCRIPT = require("./script.js");
 const OUT = process.argv[2] || path.join(__dirname, "..", "讲稿_演讲用_最新版.docx");
 const FONT = { ascii: "Arial", hAnsi: "Arial", eastAsia: "Microsoft YaHei", cs: "Arial" };
 const NAVY = "1F2A44", ORANGE = "C2410C", GRAY = "6B7280";
-const BODY = 40;           // 半磅：20 磅
-const LINE_CAP = 12;       // 每行最多约 12 个汉字
+let BODY = 40;           // 半磅：20 磅
+let LINE_CAP = 12;       // 每行最多约 12 个汉字
 const mmss = (t) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
 const run = (text, o = {}) => new TextRun({ text, font: FONT, size: BODY, ...o });
 const width = (t) => [...t].reduce((a, c) => a + (/[\u0000-ÿ]/.test(c) ? 0.55 : 1), 0);
@@ -84,6 +84,8 @@ const children = [];
 let acc = 0;
 SCRIPT.forEach((x, i) => {
   acc += x.secs;
+  // 字数多的页面略缩字号，保证一页放得下
+  BODY = x.chars > 190 ? 32 : x.chars > 150 ? 35 : 40; LINE_CAP = x.chars > 190 ? 15 : x.chars > 150 ? 14 : 12;
   const first = i === 0;
   children.push(new Paragraph({
     pageBreakBefore: !first, spacing: { after: 80 },
@@ -108,6 +110,7 @@ SCRIPT.forEach((x, i) => {
 });
 
 // 末页：被问到时
+BODY = 40; LINE_CAP = 12;
 children.push(new Paragraph({ pageBreakBefore: true, spacing: { after: 140 }, children: [run("被问到时", { size: 30, bold: true, color: NAVY })] }));
 [
   ["样本不能代表美国人，报告还有价值吗？", "有，对 AI 用户的描述可以参考；引用时要限定在 AI 用户。"],
