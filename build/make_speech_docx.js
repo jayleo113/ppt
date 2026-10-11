@@ -1,5 +1,5 @@
 // 生成手机阅读用讲稿：页面按手机屏幕比例（9:16），一页对应一张幻灯片，翻一屏就是翻一页 PPT
-// 每页：进度与累计时间 → 一句话主旨 → 短句分行的讲稿；（括号内）是 PPT 上没有的话，灰色；数字橙色加粗
+// 每页：进度与累计时间 → 一句话主旨 → 短句分行的讲稿 → 翻页提醒；（括号内）是 PPT 上没有的话，灰色；数字橙色加粗
 // 用法：node build/make_speech_docx.js [输出 docx 路径]
 const fs = require("fs");
 const path = require("path");
@@ -99,6 +99,11 @@ SCRIPT.forEach((x, i) => {
       keepLines: true, spacing: { after: li === g.length - 1 ? 100 : 10, line: 440 },
       children: renderLine(line),
     }));
+  }));
+  const nxt = SCRIPT[i + 1];
+  children.push(new Paragraph({
+    spacing: { before: 80 }, border: { top: { style: BorderStyle.SINGLE, size: 6, color: "D5DAE1", space: 4 } },
+    children: [run(nxt ? `▶ 翻页 → 第 ${i + 2} 页 ${nxt.title}` : "■ 讲完，进入提问", { size: 28, bold: true, color: ORANGE })],
   }));
 });
 
