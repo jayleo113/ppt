@@ -1,4 +1,4 @@
-// 生成《Gracenote 2026 AI 报告评析》4–5 分钟课堂汇报 PPT 与讲稿
+// 生成《Gracenote 2026 AI 报告评析》课堂汇报 PPT（备注含讲稿；讲稿文件见 make_speech_docx.js）
 // 用法：node build/build_deck.js [输出 pptx 路径]
 // 依赖：pptxgenjs、jszip（随 pptxgenjs 安装）
 //
@@ -11,7 +11,6 @@ const SCRIPT = require("./script.js");
 
 const ROOT = path.join(__dirname, "..");
 const OUT = process.argv[2] || path.join(ROOT, "Gracenote报告解读_课堂汇报.pptx");
-const SCRIPT_MD = path.join(ROOT, "讲稿_4-5分钟.md");
 
 const THEME = {
   name: "Navy Brief",
@@ -155,6 +154,7 @@ function timingXml(xml, groups) {
   text(s, "市场调研：方法与实践 · 课后作业", { x: 0.8, y: 0.95, w: 5.9, h: 0.4, fontSize: 15, color: C.accent4, objectName: "课程名" });
   s.addText("AI 时代的电视搜索\n与内容发现", { placeholder: "title" });
   s.addText("Gracenote（尼尔森旗下）2026 年研究报告评析", { placeholder: "body" });
+  text(s, "黄广润　524031910373", { x: 0.8, y: 6.55, w: 5.9, h: 0.4, fontSize: 15, color: C.accent6, objectName: "汇报人" });
   rule(s, 0.8, 4.55, 5.6, "3A4766", "封面分隔线");
   text(s, "54%", { x: 0.8, y: 4.75, w: 2.0, h: 1.0, fontSize: 48, bold: true, fontFace: "Arial", color: C.accent4, valign: "middle", objectName: "封面数字" });
   text(s, [
@@ -220,7 +220,7 @@ function timingXml(xml, groups) {
   });
   text(s, [
     { text: "注：", options: { bold: true, color: C.accent3 } },
-    { text: "报告另引用 11 个外部来源，其方法披露情况见附录一。", options: { color: C.text1 } },
+    { text: "报告另引用尼尔森、皮尤、德勤、普华永道等 11 个外部来源。", options: { color: C.text1 } },
   ], { x: 0.6, y: 6.15, w: 12.1, h: 0.45, fontSize: 18, valign: "middle", objectName: "说明" });
   notes(s);
 
@@ -386,63 +386,13 @@ function timingXml(xml, groups) {
     text(s, tag, { x: 6.35, y: y + 0.24, w: 1.75, h: 0.47, fontSize: 15, bold: true, color: C.background1, align: "center", valign: "middle", objectName: `判断标签文字${i + 1}` });
   });
   rule(s, 0.8, 5.75, 7.3, "3A4766", "结论分隔线");
-  text(s, "报告公开了样本量、调查时间与年龄范围，数据可复核。", { x: 0.8, y: 5.95, w: 11.7, h: 0.45, fontSize: 16, color: C.accent6, valign: "middle", objectName: "可取之处" });
+  text(s, "年轻人更多用 AI 找内容、AI 回答不够可靠，这两个方向与皮尤、Veed 等独立来源一致。", { x: 0.8, y: 5.95, w: 11.7, h: 0.45, fontSize: 16, color: C.accent6, valign: "middle", objectName: "可取之处" });
   card(s, 8.7, 1.95, 3.85, 3.8, C.background1, "讨论卡");
   text(s, [
     { text: "讨论", options: { fontSize: 15, bold: true, color: C.accent3, breakLine: true } },
     { text: "如何设计调查，\n检验检索困难与\n退订的因果关系？", options: { fontSize: 22, bold: true, color: C.text2 } },
   ], { x: 9.05, y: 2.1, w: 3.2, h: 3.5, valign: "middle", paraSpaceAfter: 14, objectName: "讨论问题" });
   notes(s);
-
-  // ======================= 附录一 =======================
-  pres.addSection({ title: "附录（备问）" });
-  s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "附录（备问）" });
-  head(s, "附录（备问）", "附录一：数据来源的方法披露");
-  const ST = { open: [C.accent1, "方法公开"], part: [C.accent5, "部分公开"], gap: [C.accent3, "关键信息未公开"] };
-  [
-    ["Gracenote 2026 AI 调查", "线上 · 美国 AI 用户 4,003 人", "gap"],
-    ["Gracenote 2025 流媒体调查", "线上 · 六国各 500 人", "gap"],
-    ["皮尤研究中心青少年调查", "概率样本 1,458 人 · 加权", "open"],
-    ["德勤数字媒体趋势调查", "美国 3,595 人 · 人口普查加权", "open"],
-    ["尼尔森 NPOWER", "测量仪样本户 + 机顶盒数据", "open"],
-    ["尼尔森流媒体收视", "测量仪样本户，仅电视屏幕", "open"],
-    ["Gracenote 节目数据库", "企业自有数据，非抽样", "gap"],
-    ["普华永道展望", "公开数据 + 访谈 + 建模", "part"],
-    ["Veed Analytics 测试", "六国、独播剧；题量未公开", "gap"],
-    ["南加州大学论文", "同行评审，自动分类器", "open"],
-    ["Fabric 退订率", "计算方法未公开", "gap"],
-  ].forEach(([name, how, st], i) => {
-    const col = i % 4, row = Math.floor(i / 4);
-    const x = 0.6 + col * 3.075, y = 1.7 + row * 1.6;
-    card(s, x, y, 2.9, 1.42, C.background2, `来源卡${i + 1}`);
-    text(s, ST[st][1], { x: x + 0.2, y: y + 0.12, w: 2.5, h: 0.35, fontSize: 12, bold: true, color: ST[st][0], objectName: `来源状态${i + 1}` });
-    text(s, [
-      { text: name, options: { fontSize: 15, bold: true, color: C.text2, breakLine: true } },
-      { text: how, options: { fontSize: 12, color: C.text1 } },
-    ], { x: x + 0.2, y: y + 0.48, w: 2.6, h: 0.88, valign: "top", paraSpaceAfter: 3, objectName: `来源说明${i + 1}` });
-  });
-  src(s, "详见《Gracenote报告_数据来源与采集方式核查.md》。");
-  s.addNotes("备问用，不计入汇报时间。被问及数据来源与方法披露时使用。");
-
-  // ======================= 附录二 =======================
-  s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "附录（备问）" });
-  head(s, "附录（备问）", "附录二：引用与原始来源比对");
-  const hd = (t) => ({ text: t, options: { bold: true, color: C.background1, fill: { color: C.text2 } } });
-  s.addTable([
-    [hd("报告表述"), hd("原始来源")],
-    ["皮尤：30% 的青少年每日使用", "精确值 28%；13–14 岁为 24%"],
-    ["南加州大学：“高达 38%”数据有偏差", "仅为单一知识库、单一自动指标的结果"],
-    ["德勤：41% 的“订户”认为不值", "原文分母为全体消费者"],
-    ["普华永道：2029 年支出 3,185 亿美元", "全球数据，非美国"],
-    ["摘要：54% 的 18–34 岁“会取消”", "原题为“可能取消”，且为六国数据"],
-    ["“26% 的美国人找不到想看的”", "未找到出处"],
-  ], {
-    x: 0.6, y: 1.7, w: 12.1, colW: [5.6, 6.5], fontSize: 16, color: C.text1, valign: "middle",
-    margin: [4, 12, 4, 12], border: [{ type: "none" }, { type: "none" }, { pt: 0.75, color: RULE }, { type: "none" }],
-    rowH: [0.55, 0.62, 0.62, 0.62, 0.62, 0.62, 0.62], fill: { color: C.background1 }, objectName: "引用比对表",
-  });
-  src(s, "来源：Gracenote 报告；皮尤、南加州大学、德勤、普华永道原文。");
-  s.addNotes("备问用，不计入汇报时间。被问及引用数据是否准确时使用。");
 
   await pres.writeFile({ fileName: OUT });
 
@@ -463,41 +413,6 @@ function timingXml(xml, groups) {
   }
   fs.writeFileSync(OUT, await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }));
 
-  // 讲稿 Markdown
-  const total = SCRIPT.reduce((a, x) => a + x.secs, 0);
-  const chars = SCRIPT.reduce((a, x) => a + x.chars, 0);
-  const mmss = (t) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
-  let acc = 0;
-  const md = [
-    "# 演讲稿：Gracenote 2026 AI 报告评析",
-    "",
-    `全文约 ${chars} 字，按每分钟约 240 字的中速朗读，用时约 ${mmss(total)}。附录两页不讲，用于回答提问。【】内是对应页码和该页用时，朗读时不念。`,
-    "",
-    "---",
-    "",
-    ...SCRIPT.flatMap((x, i) => [`**【第 ${i + 1} 页　${x.title}　约 ${x.secs} 秒】**`, "", x.text, ""]),
-    "---",
-    "",
-    "## 用时参考",
-    "",
-    "| 页 | 内容 | 用时 | 累计 |",
-    "|---|---|---|---|",
-    ...SCRIPT.map((x, i) => { acc += x.secs; return `| ${i + 1} | ${x.title} | ${x.secs} 秒 | ${mmss(acc)} |`; }),
-    "",
-    "如需压缩：略去第 3 页最后一句，以及第 12 页“数据可以核对”一句。",
-    "",
-    "## 可能的提问与回答要点",
-    "",
-    "**问：样本不能代表美国人群，报告是否还有价值？**  ",
-    "答：有。报告对 AI 用户的描述可作参考，且与皮尤等独立调查的方向一致。问题在于引用时应限定为 AI 用户，不宜表述为美国人整体。",
-    "",
-    "**问：六国均值的问题是否只是表述不严谨？**  ",
-    "答：可能如此，评析并未质疑数据真实性。但该数值置于美国收视图表中，读者会误以为美国平均检索时长为 14 分钟，而原始数据中美国为 12 分钟。",
-    "",
-    "**问：数据来源如何核对？**  ",
-    "答：对照了报告原文、Gracenote 2025 年报告，以及皮尤、德勤、普华永道和南加州大学论文的原文，逐一记录 11 个来源的方法披露情况（见附录）。",
-    "",
-  ].join("\n");
-  fs.writeFileSync(SCRIPT_MD, md);
-  console.log("written", OUT, "| script", mmss(total), chars, "chars");
+  const total = SCRIPT.reduce((t, x) => t + x.secs, 0);
+  console.log("written", OUT, "| script", `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`);
 })().catch((e) => { console.error(e); process.exit(1); });
