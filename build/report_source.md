@@ -122,4 +122,4 @@ Veed 的测试也有需要注意的地方。我找到了测试者本人的文章
 - Broadband TV News. US streaming platforms shift focus to retention as churn rates surge. 2025 年 8 月 20 日（转述 Fabric 分析）.
 - Nielsen. Big Data + Panel 方法说明；Streaming Content Ratings 说明.
 
-逐项来源的方法披露与核对记录见《Gracenote报告_数据来源与采集方式核查.md》。
+逐项来源的方法披露与核对记录见另附的《Gracenote 报告数据来源与采集方式核查》。
