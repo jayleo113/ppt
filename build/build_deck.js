@@ -234,12 +234,12 @@ function timingXml(xml, groups) {
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "报告介绍" });
   head(s, "03  研究结论", "结论一、二：年轻人依赖 AI，但信任有限");
   [
-    [0.6, "54%", "13–14 岁受访者\n每日使用 AI"],
+    [0.6, "54%", "13–14 岁受访者\n每日使用 AI\n80% 称近 18 个月使用增加"],
     [6.75, "75%", "受访者表示会\n核对 AI 的结果"],
   ].forEach(([x, num, d], i) => {
     card(s, x, 1.8, 5.95, 2.2, C.background2, `数据卡${i + 1}`);
     text(s, num, { x: x + 0.4, y: 1.8, w: 2.6, h: 2.2, fontSize: 60, bold: true, fontFace: "Arial", color: C.accent1, valign: "middle", objectName: `数据${i + 1}` });
-    text(s, d, { x: x + 3.0, y: 1.8, w: 2.8, h: 2.2, fontSize: 20, color: C.text1, valign: "middle", objectName: `数据说明${i + 1}` });
+    text(s, d.split("\n").map((l, k, arr) => ({ text: l, options: { fontSize: k === 2 ? 14 : 20, color: k === 2 ? C.accent5 : C.text1, breakLine: k < arr.length - 1 } })), { x: x + 3.0, y: 1.8, w: 2.8, h: 2.2, valign: "middle", objectName: `数据说明${i + 1}` });
   });
   text(s, "报告的解释", { x: 0.6, y: 4.35, w: 4, h: 0.4, fontSize: 16, bold: true, color: C.accent5, objectName: "解释标题" });
   [["回答直接、可追问", "使用增加"], ["可能生成错误信息", "需要核对"]].forEach(([cause, effect], i) => {
@@ -277,7 +277,7 @@ function timingXml(xml, groups) {
   head(s, "04  思考与评价", "评价：逐项检验四个推论环节");
   [
     ["① 依赖 AI", "调查对象\n调查时间"],
-    ["② 信任不足", "调查对象"],
+    ["② 信任有限", "调查对象"],
     ["③ 难找导致退订", "调查范围\n研究方法"],
     ["④ 接入行业数据", "研究方法"],
   ].forEach(([k, dims], i) => {
