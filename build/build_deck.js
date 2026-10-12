@@ -10,7 +10,7 @@ const pptxgen = require("pptxgenjs");
 const SCRIPT = require("./script.js");
 
 const ROOT = path.join(__dirname, "..");
-const OUT = process.argv[2] || path.join(ROOT, "Gracenote报告解读_课堂汇报_最新版.pptx");
+const OUT = process.argv[2] || path.join(ROOT, "524031910373_黄广润_AI时代的电视搜索与内容发现.pptx");
 
 const THEME = {
   name: "Navy Brief",
