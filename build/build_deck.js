@@ -33,7 +33,7 @@ const seq = (n, f) => Array.from({ length: n }, (_, i) => f(i + 1));
 const ANALYSIS = ["事实", "原因", "影响"].map((k) => [`${k}标签`, `${k}内容`]);
 const MOTION = [
   [["封面图"], ["封面分隔线", "封面目录"]],
-  [...seq(4, (i) => [`选题标签${i}`, `选题内容${i}`]), ["报告封面阴影", "报告封面", "封面图注"]],
+  [...seq(4, (i) => [`选题标签${i}`, `选题内容${i}`]), ["报告封面阴影", "报告封面", "封面图注"], ["报告出处"]],
   [["背景"], ...seq(3, (i) => [`背景卡${i}`, `背景数字${i}`, `背景说明${i}`]), ["背景注"], ...seq(3, (i) => [`问题编号${i}`, `问题名${i}`, `问题内容${i}`]), ["建议说明"]],
   [["说明"]],
   [...seq(2, (i) => [`数据卡${i}`, `数据${i}`, `数据说明${i}`]), ["解释标题", "原因1", "箭头1", "结果1"], ["原因2", "箭头2", "结果2"]],
@@ -122,6 +122,9 @@ function timingXml(xml, groups) {
   const rule = (s, x, y, w, color = RULE, name = "分隔线") =>
     s.addShape(pres.shapes.LINE, { x, y, w, h: 0, line: { color, width: 0.75 }, objectName: name });
   const src = (s, t) => text(s, t, { x: 0.6, y: 6.6, w: 11.3, h: 0.3, fontSize: 11, color: C.accent5, objectName: "来源说明" });
+  // 带超链接的出处行：parts 为 [文字] 或 [文字, 链接]
+  const srcLink = (s, parts, y = 6.6, name = "来源说明") => text(s, parts.map(([t, url]) => ({ text: t, options: url ? { hyperlink: { url, tooltip: url }, color: C.accent1, underline: { style: "sng" } } : { color: C.accent5 } })),
+    { x: 0.6, y, w: 12.1, h: 0.3, fontSize: 11, objectName: name });
   const head = (s, kicker, title, dark) => {
     text(s, kicker, { x: dark ? 0.8 : 0.6, y: dark ? 0.35 : 0.3, w: 8, h: 0.35, fontSize: 14, bold: true, color: dark ? C.accent4 : C.accent3, valign: "middle", objectName: "章节标记" });
     s.addText(title, { placeholder: "title" });
@@ -178,6 +181,7 @@ function timingXml(xml, groups) {
   rule(s, 0.6, 6.28, 7.2);
   framedImage(s, "report_cover.jpg", 8.35, 2.45, 4.35, 2.64, "报告封面");
   text(s, "报告封面", { x: 8.35, y: 5.25, w: 4.35, h: 0.35, fontSize: 13, color: C.accent5, objectName: "封面图注" });
+  srcLink(s, [["出处：Gracenote（Nielsen），TV Search and Discovery in the AI Era，2026 年 4 月。　"], ["报告原文（PDF）", "https://s3.amazonaws.com/media.mediapost.com/uploads/GRACENOTE-2026-AI-report.pdf"], ["　｜　"], ["Gracenote 发布页", "https://gracenote.com/newsroom/gen-alpha-leads-shift-to-ai-powered-entertainment-search-discovery-and-recommendations/"]], 6.55, "报告出处");
   notes(s);
 
   // ======================= 01 背景与问题 =======================
@@ -314,7 +318,7 @@ function timingXml(xml, groups) {
     "六国等权平均，\n法国 26 分钟抬高均值",
     "美国实际为 12 分钟，\n易被高估",
   ]);
-  src(s, "来源：Gracenote 2025 年报告《State of Play》分国家数据（每国 500 人）。");
+  srcLink(s, [["来源：Gracenote 2025 年报告《State of Play》分国家数据（每国 500 人）。　"], ["原文（PDF）", "https://s3.amazonaws.com/media.mediapost.com/uploads/gracenote-2025-state-of-play.pdf"]]);
   notes(s);
 
   // ======================= 调查时间 =======================
@@ -337,7 +341,7 @@ function timingXml(xml, groups) {
     "皮尤为全体青少年，\n本报告仅为 AI 用户",
     "统一分母后仍差约 10 个百分点，\n还不能判断“加速”",
   ]);
-  src(s, "来源：皮尤《Teens, Social Media and AI Chatbots 2025》数据表（使用者中每日使用 44%）。");
+  srcLink(s, [["来源：皮尤《Teens, Social Media and AI Chatbots 2025》数据表（使用者中每日使用 44%）。　"], ["原文", "https://www.pewresearch.org/internet/2025/12/09/teens-social-media-and-ai-chatbots-2025/"]]);
   notes(s);
 
   // ======================= 研究方法 =======================
